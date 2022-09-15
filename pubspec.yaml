@@ -19,7 +19,10 @@ dependencies:
   flutter_chat_types:
     git:
       url: https://github.com/sajadmaster/flutter_chat_types
-  flutter_link_previewer: ^3.0.1
+  # flutter_link_previewer: ^3.0.1
+  flutter_link_previewer:
+    git:
+      url: https://github.com/sajadmaster/flutter_link_previewer
   flutter_parsed_text: ^2.2.1
   intl: ^0.17.0
   meta: ^1.7.0
