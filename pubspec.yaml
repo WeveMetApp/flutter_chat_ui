@@ -17,10 +17,12 @@ dependencies:
     sdk: flutter
   # flutter_chat_types: ^3.4.5
   flutter_chat_types:
-    git:
-      url: https://github.com/sajadmaster/flutter_chat_types
+    path: ../flutter_chat_types
+    # git:
+    #   url: https://github.com/sajadmaster/flutter_chat_types
   # flutter_link_previewer: ^3.0.1
   flutter_link_previewer:
+    # path: ../flutter_link_previewer
     git:
       url: https://github.com/sajadmaster/flutter_link_previewer
   flutter_parsed_text: ^2.2.1
