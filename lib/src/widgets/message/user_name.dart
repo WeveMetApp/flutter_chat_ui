@@ -19,7 +19,7 @@ class UserName extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = InheritedChatTheme.of(context).theme;
     final color = getUserAvatarNameColor(author, theme.userAvatarNameColors);
-    final name = getUserName(author);
+    final name = getUserProfileName(author);
 
     return name.isEmpty
         ? const SizedBox()
