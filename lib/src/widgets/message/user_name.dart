@@ -24,12 +24,12 @@ class UserName extends StatelessWidget {
     return name.isEmpty
         ? const SizedBox()
         : Padding(
-            padding: const EdgeInsets.only(bottom: 6),
+            padding: const EdgeInsets.only(bottom: 6, left: 7),
             child: Text(
               name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: theme.userNameTextStyle.copyWith(color: color),
+              style: theme.userNameTextStyle,
             ),
           );
   }

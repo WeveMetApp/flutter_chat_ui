@@ -1,10 +1,14 @@
+import 'package:chat_bubbles/bubbles/bubble_normal.dart';
+import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
+import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
+import 'package:chat_bubbles/bubbles/bubble_special_two.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:flutter_link_previewer/flutter_link_previewer.dart'
-    show LinkPreview, regexEmail, regexLink;
+import 'package:flutter_link_previewer/flutter_link_previewer.dart' show LinkPreview, regexEmail, regexLink;
 import 'package:flutter_parsed_text/flutter_parsed_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../flutter_chat_ui.dart';
 import '../../models/emoji_enlargement_behavior.dart';
 import '../../models/pattern_style.dart';
 import '../../util.dart';
@@ -27,7 +31,11 @@ class TextMessage extends StatelessWidget {
     required this.showName,
     required this.usePreviewData,
     this.userAgent,
+    required this.showBubbleNip,
   });
+
+  /// sajad: if true, bubble will have a nip
+  final bool showBubbleNip;
 
   /// See [Message.emojiEnlargementBehavior].
   final EmojiEnlargementBehavior emojiEnlargementBehavior;
@@ -46,8 +54,7 @@ class TextMessage extends StatelessWidget {
   final Widget Function(String userId)? nameBuilder;
 
   /// See [LinkPreview.onPreviewDataFetched].
-  final void Function(types.TextMessage, types.PreviewData)?
-      onPreviewDataFetched;
+  final void Function(types.TextMessage, types.PreviewData)? onPreviewDataFetched;
 
   /// Customisation options for the [TextMessage].
   final TextMessageOptions options;
@@ -63,9 +70,7 @@ class TextMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final enlargeEmojis =
-        emojiEnlargementBehavior != EmojiEnlargementBehavior.never &&
-            isConsistsOfEmojis(emojiEnlargementBehavior, message);
+    final enlargeEmojis = emojiEnlargementBehavior != EmojiEnlargementBehavior.never && isConsistsOfEmojis(emojiEnlargementBehavior, message);
     final theme = InheritedChatTheme.of(context).theme;
     final user = InheritedUser.of(context).user;
     final width = MediaQuery.of(context).size.width;
@@ -80,10 +85,11 @@ class TextMessage extends StatelessWidget {
     }
 
     return Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: theme.messageInsetsHorizontal,
-        vertical: theme.messageInsetsVertical,
-      ),
+      // color: Colors.purple,
+      // margin: EdgeInsets.symmetric(
+      //   horizontal: theme.messageInsetsHorizontal,
+      //   vertical: theme.messageInsetsVertical,
+      // ),
       child: _textWidgetBuilder(user, context, enlargeEmojis),
     );
   }
@@ -93,18 +99,10 @@ class TextMessage extends StatelessWidget {
     double width,
     BuildContext context,
   ) {
-    final linkDescriptionTextStyle = user.id == message.author.id
-        ? InheritedChatTheme.of(context)
-            .theme
-            .sentMessageLinkDescriptionTextStyle
-        : InheritedChatTheme.of(context)
-            .theme
-            .receivedMessageLinkDescriptionTextStyle;
-    final linkTitleTextStyle = user.id == message.author.id
-        ? InheritedChatTheme.of(context).theme.sentMessageLinkTitleTextStyle
-        : InheritedChatTheme.of(context)
-            .theme
-            .receivedMessageLinkTitleTextStyle;
+    final linkDescriptionTextStyle =
+        user.id == message.author.id ? InheritedChatTheme.of(context).theme.sentMessageLinkDescriptionTextStyle : InheritedChatTheme.of(context).theme.receivedMessageLinkDescriptionTextStyle;
+    final linkTitleTextStyle =
+        user.id == message.author.id ? InheritedChatTheme.of(context).theme.sentMessageLinkTitleTextStyle : InheritedChatTheme.of(context).theme.receivedMessageLinkTitleTextStyle;
 
     return LinkPreview(
       enableAnimation: true,
@@ -115,8 +113,7 @@ class TextMessage extends StatelessWidget {
       openOnPreviewImageTap: options.openOnPreviewImageTap,
       openOnPreviewTitleTap: options.openOnPreviewTitleTap,
       padding: EdgeInsets.symmetric(
-        horizontal:
-            InheritedChatTheme.of(context).theme.messageInsetsHorizontal,
+        horizontal: InheritedChatTheme.of(context).theme.messageInsetsHorizontal,
         vertical: InheritedChatTheme.of(context).theme.messageInsetsVertical,
       ),
       previewData: message.previewData,
@@ -139,128 +136,118 @@ class TextMessage extends StatelessWidget {
     bool enlargeEmojis,
   ) {
     final theme = InheritedChatTheme.of(context).theme;
-    final bodyLinkTextStyle = user.id == message.author.id
-        ? InheritedChatTheme.of(context).theme.sentMessageBodyLinkTextStyle
-        : InheritedChatTheme.of(context).theme.receivedMessageBodyLinkTextStyle;
-    final bodyTextStyle = user.id == message.author.id
-        ? theme.sentMessageBodyTextStyle
-        : theme.receivedMessageBodyTextStyle;
-    final boldTextStyle = user.id == message.author.id
-        ? theme.sentMessageBodyBoldTextStyle
-        : theme.receivedMessageBodyBoldTextStyle;
-    final codeTextStyle = user.id == message.author.id
-        ? theme.sentMessageBodyCodeTextStyle
-        : theme.receivedMessageBodyCodeTextStyle;
-    final emojiTextStyle = user.id == message.author.id
-        ? theme.sentEmojiMessageTextStyle
-        : theme.receivedEmojiMessageTextStyle;
+    final bodyLinkTextStyle = user.id == message.author.id ? InheritedChatTheme.of(context).theme.sentMessageBodyLinkTextStyle : InheritedChatTheme.of(context).theme.receivedMessageBodyLinkTextStyle;
+    final bodyTextStyle = user.id == message.author.id ? theme.sentMessageBodyTextStyle : theme.receivedMessageBodyTextStyle;
+    final boldTextStyle = user.id == message.author.id ? theme.sentMessageBodyBoldTextStyle : theme.receivedMessageBodyBoldTextStyle;
+    final codeTextStyle = user.id == message.author.id ? theme.sentMessageBodyCodeTextStyle : theme.receivedMessageBodyCodeTextStyle;
+    final emojiTextStyle = user.id == message.author.id ? theme.sentEmojiMessageTextStyle : theme.receivedEmojiMessageTextStyle;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (showName)
-          nameBuilder?.call(message.author.id) ??
-              UserName(author: message.author),
+        if (showName) nameBuilder?.call(message.author.id) ?? UserName(author: message.author),
         if (enlargeEmojis)
-          if (isTextMessageTextSelectable)
-            SelectableText(message.text, style: emojiTextStyle)
-          else
-            Text(message.text, style: emojiTextStyle)
+          if (isTextMessageTextSelectable) SelectableText(message.text, style: emojiTextStyle) else Text(message.text, style: emojiTextStyle)
         else
-          ParsedText(
-            parse: [
-              MatchText(
-                onTap: (mail) async {
-                  final url = Uri(scheme: 'mailto', path: mail);
-                  if (await canLaunchUrl(url)) {
-                    await launchUrl(url);
-                  }
-                },
-                pattern: regexEmail,
-                style: bodyLinkTextStyle ??
-                    bodyTextStyle.copyWith(
-                      decoration: TextDecoration.underline,
+          Container(
+            // color: Colors.orange,
+            child: BubbleSpecialOne(
+              tail: showBubbleNip,
+              isSender: user.id == message.author.id,
+              color: user.id == message.author.id ? Colors.black : const Color(0xffE8E8E8),
+              text: Padding(
+                padding: const EdgeInsets.all(5),
+                child: ParsedText(
+                  parse: [
+                    MatchText(
+                      onTap: (mail) async {
+                        final url = Uri(scheme: 'mailto', path: mail);
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url);
+                        }
+                      },
+                      pattern: regexEmail,
+                      style: bodyLinkTextStyle ??
+                          bodyTextStyle.copyWith(
+                            decoration: TextDecoration.underline,
+                          ),
                     ),
-              ),
-              MatchText(
-                onTap: (urlText) async {
-                  final protocolIdentifierRegex = RegExp(
-                    r'^((http|ftp|https):\/\/)',
-                    caseSensitive: false,
-                  );
-                  if (!urlText.startsWith(protocolIdentifierRegex)) {
-                    urlText = 'https://$urlText';
-                  }
-                  if (options.onLinkPressed != null) {
-                    options.onLinkPressed!(urlText);
-                  } else {
-                    final url = Uri.tryParse(urlText);
-                    if (url != null && await canLaunchUrl(url)) {
-                      await launchUrl(
-                        url,
-                        mode: LaunchMode.externalApplication,
-                      );
-                    }
-                  }
-                },
-                pattern: regexLink,
-                style: bodyLinkTextStyle ??
-                    bodyTextStyle.copyWith(
-                      decoration: TextDecoration.underline,
+                    MatchText(
+                      onTap: (urlText) async {
+                        final protocolIdentifierRegex = RegExp(
+                          r'^((http|ftp|https):\/\/)',
+                          caseSensitive: false,
+                        );
+                        if (!urlText.startsWith(protocolIdentifierRegex)) {
+                          urlText = 'https://$urlText';
+                        }
+                        if (options.onLinkPressed != null) {
+                          options.onLinkPressed!(urlText);
+                        } else {
+                          final url = Uri.tryParse(urlText);
+                          if (url != null && await canLaunchUrl(url)) {
+                            await launchUrl(
+                              url,
+                              mode: LaunchMode.externalApplication,
+                            );
+                          }
+                        }
+                      },
+                      pattern: regexLink,
+                      style: bodyLinkTextStyle ??
+                          bodyTextStyle.copyWith(
+                            decoration: TextDecoration.underline,
+                          ),
                     ),
+                    MatchText(
+                      pattern: PatternStyle.bold.pattern,
+                      style: boldTextStyle ?? bodyTextStyle.merge(PatternStyle.bold.textStyle),
+                      renderText: ({required String str, required String pattern}) => {
+                        'display': str.replaceAll(
+                          PatternStyle.bold.from,
+                          PatternStyle.bold.replace,
+                        ),
+                      },
+                    ),
+                    MatchText(
+                      pattern: PatternStyle.italic.pattern,
+                      style: bodyTextStyle.merge(PatternStyle.italic.textStyle),
+                      renderText: ({required String str, required String pattern}) => {
+                        'display': str.replaceAll(
+                          PatternStyle.italic.from,
+                          PatternStyle.italic.replace,
+                        ),
+                      },
+                    ),
+                    MatchText(
+                      pattern: PatternStyle.lineThrough.pattern,
+                      style: bodyTextStyle.merge(PatternStyle.lineThrough.textStyle),
+                      renderText: ({required String str, required String pattern}) => {
+                        'display': str.replaceAll(
+                          PatternStyle.lineThrough.from,
+                          PatternStyle.lineThrough.replace,
+                        ),
+                      },
+                    ),
+                    MatchText(
+                      pattern: PatternStyle.code.pattern,
+                      style: codeTextStyle ?? bodyTextStyle.merge(PatternStyle.code.textStyle),
+                      renderText: ({required String str, required String pattern}) => {
+                        'display': str.replaceAll(
+                          PatternStyle.code.from,
+                          PatternStyle.code.replace,
+                        ),
+                      },
+                    ),
+                  ],
+                  regexOptions: const RegexOptions(multiLine: true, dotAll: true),
+                  selectable: isTextMessageTextSelectable,
+                  style: bodyTextStyle,
+                  text: message.text,
+                  textWidthBasis: TextWidthBasis.longestLine,
+                ),
               ),
-              MatchText(
-                pattern: PatternStyle.bold.pattern,
-                style: boldTextStyle ??
-                    bodyTextStyle.merge(PatternStyle.bold.textStyle),
-                renderText: ({required String str, required String pattern}) =>
-                    {
-                  'display': str.replaceAll(
-                    PatternStyle.bold.from,
-                    PatternStyle.bold.replace,
-                  ),
-                },
-              ),
-              MatchText(
-                pattern: PatternStyle.italic.pattern,
-                style: bodyTextStyle.merge(PatternStyle.italic.textStyle),
-                renderText: ({required String str, required String pattern}) =>
-                    {
-                  'display': str.replaceAll(
-                    PatternStyle.italic.from,
-                    PatternStyle.italic.replace,
-                  ),
-                },
-              ),
-              MatchText(
-                pattern: PatternStyle.lineThrough.pattern,
-                style: bodyTextStyle.merge(PatternStyle.lineThrough.textStyle),
-                renderText: ({required String str, required String pattern}) =>
-                    {
-                  'display': str.replaceAll(
-                    PatternStyle.lineThrough.from,
-                    PatternStyle.lineThrough.replace,
-                  ),
-                },
-              ),
-              MatchText(
-                pattern: PatternStyle.code.pattern,
-                style: codeTextStyle ??
-                    bodyTextStyle.merge(PatternStyle.code.textStyle),
-                renderText: ({required String str, required String pattern}) =>
-                    {
-                  'display': str.replaceAll(
-                    PatternStyle.code.from,
-                    PatternStyle.code.replace,
-                  ),
-                },
-              ),
-            ],
-            regexOptions: const RegexOptions(multiLine: true, dotAll: true),
-            selectable: isTextMessageTextSelectable,
-            style: bodyTextStyle,
-            text: message.text,
-            textWidthBasis: TextWidthBasis.longestLine,
+            ),
           ),
       ],
     );

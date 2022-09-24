@@ -30,28 +30,29 @@ class UserAvatar extends StatelessWidget {
       author,
       InheritedChatTheme.of(context).theme.userAvatarNameColors,
     );
-    final hasImage = author.imageUrl != null;
+    final hasImage = author.imageUrl != null && author.imageUrl!.isNotEmpty;
     final initials = getUserInitials(author);
 
     return Container(
-      margin: bubbleRtlAlignment == BubbleRtlAlignment.left
-          ? const EdgeInsetsDirectional.only(end: 8)
-          : const EdgeInsets.only(right: 8),
+      // color: Colors.yellow,
+      // margin: bubbleRtlAlignment == BubbleRtlAlignment.left
+      //     ? const EdgeInsetsDirectional.only(end: 8)
+      //     : const EdgeInsets.only(right: 8),
       child: GestureDetector(
         onTap: () => onAvatarTap?.call(author),
         child: CircleAvatar(
-          backgroundColor: hasImage
-              ? InheritedChatTheme.of(context)
-                  .theme
-                  .userAvatarImageBackgroundColor
-              : color,
-          backgroundImage: hasImage ? NetworkImage(author.imageUrl!) : null,
-          radius: 16,
+          backgroundColor: hasImage ? InheritedChatTheme.of(context).theme.userAvatarImageBackgroundColor : Colors.transparent,
+          backgroundImage: hasImage
+              ? NetworkImage(
+                  author.imageUrl!,
+                )
+              : null,
+          radius: 25,
           child: !hasImage
-              ? Text(
-                  initials,
-                  style:
-                      InheritedChatTheme.of(context).theme.userAvatarTextStyle,
+              ? Image.asset(
+                  'assets/icons/ic_profile_empty.png',
+                  width: 50,
+                  height: 50,
                 )
               : null,
         ),
