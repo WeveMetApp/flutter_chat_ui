@@ -514,7 +514,6 @@ class ChatState extends State<Chat> {
             if (tappedMessage is types.ImageMessage && widget.disableImageGallery != true) {
               _onImagePressed(tappedMessage);
             }
-
             widget.onMessageTap?.call(context, tappedMessage);
           },
           onMessageVisibilityChanged: widget.onMessageVisibilityChanged,

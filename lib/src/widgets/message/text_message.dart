@@ -85,6 +85,7 @@ class TextMessage extends StatelessWidget {
     }
 
     return Container(
+      // width: double.infinity,
       // color: Colors.purple,
       // margin: EdgeInsets.symmetric(
       //   horizontal: theme.messageInsetsHorizontal,
@@ -152,7 +153,7 @@ class TextMessage extends StatelessWidget {
           Container(
             // color: Colors.orange,
             child: BubbleSpecialOne(
-              tail: showBubbleNip,
+              tail: true,
               isSender: user.id == message.author.id,
               color: user.id == message.author.id ? Colors.black : const Color(0xffE8E8E8),
               text: Padding(

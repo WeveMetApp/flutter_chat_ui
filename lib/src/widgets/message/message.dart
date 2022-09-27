@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:intl/intl.dart' as intl;
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../models/bubble_rtl_alignment.dart';
@@ -213,10 +214,11 @@ class Message extends StatelessWidget {
               right: kIsWeb ? 0 : query.padding.right,
             ),
       child: Container(
-        // color: Colors.red,
+        color: Colors.red,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+          // crossAxisAlignment: currentUserIsAuthor ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          mainAxisAlignment: currentUserIsAuthor ? MainAxisAlignment.end : MainAxisAlignment.start,
+          // mainAxisSize: MainAxisSize.min,
           textDirection: bubbleRtlAlignment == BubbleRtlAlignment.left ? null : TextDirection.ltr,
           children: [
             if (!currentUserIsAuthor && showUserAvatars) _avatarBuilder(),
@@ -248,11 +250,24 @@ class Message extends StatelessWidget {
                                 enlargeEmojis,
                               ),
                             )
-                          : _bubbleBuilder(
-                              context,
-                              borderRadius.resolve(Directionality.of(context)),
-                              currentUserIsAuthor,
-                              enlargeEmojis,
+                          : Row(
+                              mainAxisAlignment: currentUserIsAuthor ? MainAxisAlignment.end : MainAxisAlignment.start,
+                              children: [
+                                // convert int timestamp to date in string format
+                                currentUserIsAuthor && !roundBorder
+                                    ? Text(message.createdAt != null ? intl.DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!)) : 'nf')
+                                    : Container(),
+                                _bubbleBuilder(
+                                  context,
+                                  borderRadius.resolve(Directionality.of(context)),
+                                  currentUserIsAuthor,
+                                  enlargeEmojis,
+                                ),
+                                !currentUserIsAuthor && !roundBorder
+                                    ? Text(message.createdAt != null ? intl.DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!)) : 'nf')
+                                    : Container(),
+                                // currentUserIsAuthor && !roundBorder ? Container() : Text('data'),
+                              ],
                             ),
                     ),
                   ],
@@ -303,7 +318,7 @@ class Message extends StatelessWidget {
               : Container(
                   decoration: BoxDecoration(
                     borderRadius: borderRadius,
-                    // color: Colors.blue,
+                    color: Colors.blue,
                     // color: Colors.transparent,
                     // color: !currentUserIsAuthor || message.type == types.MessageType.image ? InheritedChatTheme.of(context).theme.secondaryColor : InheritedChatTheme.of(context).theme.primaryColor,
                   ),
@@ -329,18 +344,21 @@ class Message extends StatelessWidget {
                 messageWidth: messageWidth,
                 showName: showName,
               )
-            : TextMessage(
-                emojiEnlargementBehavior: emojiEnlargementBehavior,
-                hideBackgroundOnEmojiMessages: hideBackgroundOnEmojiMessages,
-                isTextMessageTextSelectable: isTextMessageTextSelectable,
-                message: textMessage,
-                nameBuilder: nameBuilder,
-                onPreviewDataFetched: onPreviewDataFetched,
-                options: textMessageOptions,
-                showName: showName,
-                usePreviewData: usePreviewData,
-                userAgent: userAgent,
-                showBubbleNip: showAvatar,
+            : Container(
+                // color: Colors.yellow,
+                child: TextMessage(
+                  emojiEnlargementBehavior: emojiEnlargementBehavior,
+                  hideBackgroundOnEmojiMessages: hideBackgroundOnEmojiMessages,
+                  isTextMessageTextSelectable: isTextMessageTextSelectable,
+                  message: textMessage,
+                  nameBuilder: nameBuilder,
+                  onPreviewDataFetched: onPreviewDataFetched,
+                  options: textMessageOptions,
+                  showName: showName,
+                  usePreviewData: usePreviewData,
+                  userAgent: userAgent,
+                  showBubbleNip: showAvatar,
+                ),
               );
       default:
         return const SizedBox();
