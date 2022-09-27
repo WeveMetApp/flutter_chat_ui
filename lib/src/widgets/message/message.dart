@@ -214,7 +214,7 @@ class Message extends StatelessWidget {
               right: kIsWeb ? 0 : query.padding.right,
             ),
       child: Container(
-        color: Colors.red,
+        // color: Colors.red,
         child: Row(
           // crossAxisAlignment: currentUserIsAuthor ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           mainAxisAlignment: currentUserIsAuthor ? MainAxisAlignment.end : MainAxisAlignment.start,
@@ -251,11 +251,26 @@ class Message extends StatelessWidget {
                               ),
                             )
                           : Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               mainAxisAlignment: currentUserIsAuthor ? MainAxisAlignment.end : MainAxisAlignment.start,
                               children: [
-                                // convert int timestamp to date in string format
+                                // sajad message sent time next to message
                                 currentUserIsAuthor && !roundBorder
-                                    ? Text(message.createdAt != null ? intl.DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!)) : 'nf')
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(right: 5),
+                                        child: Text(
+                                          message.createdAt != null
+                                              ? intl.DateFormat('HH:mm').format(
+                                                  DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
+                                                )
+                                              : 'nf',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w200,
+                                          ),
+                                        ),
+                                      )
                                     : Container(),
                                 _bubbleBuilder(
                                   context,
@@ -264,9 +279,22 @@ class Message extends StatelessWidget {
                                   enlargeEmojis,
                                 ),
                                 !currentUserIsAuthor && !roundBorder
-                                    ? Text(message.createdAt != null ? intl.DateFormat('HH:mm').format(DateTime.fromMillisecondsSinceEpoch(message.createdAt!)) : 'nf')
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(left: 5),
+                                        child: Text(
+                                          message.createdAt != null
+                                              ? intl.DateFormat('HH:mm').format(
+                                                  DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
+                                                )
+                                              : 'nf',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.w200,
+                                          ),
+                                        ),
+                                      )
                                     : Container(),
-                                // currentUserIsAuthor && !roundBorder ? Container() : Text('data'),
                               ],
                             ),
                     ),
@@ -318,7 +346,7 @@ class Message extends StatelessWidget {
               : Container(
                   decoration: BoxDecoration(
                     borderRadius: borderRadius,
-                    color: Colors.blue,
+                    // color: Colors.blue,
                     // color: Colors.transparent,
                     // color: !currentUserIsAuthor || message.type == types.MessageType.image ? InheritedChatTheme.of(context).theme.secondaryColor : InheritedChatTheme.of(context).theme.primaryColor,
                   ),
