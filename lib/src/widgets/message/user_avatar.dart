@@ -13,7 +13,9 @@ class UserAvatar extends StatelessWidget {
     required this.author,
     this.bubbleRtlAlignment,
     this.onAvatarTap,
+    required this.isOtherUserAnonymous,
   });
+  final bool isOtherUserAnonymous;
 
   /// Author to show image and name initials from.
   final types.User author;
@@ -31,7 +33,7 @@ class UserAvatar extends StatelessWidget {
       InheritedChatTheme.of(context).theme.userAvatarNameColors,
     );
     final hasImage = author.imageUrl != null && author.imageUrl!.isNotEmpty;
-    final initials = getUserInitials(author);
+    // final initials = getUserInitials(author);
 
     return Container(
       // color: Colors.yellow,
@@ -42,15 +44,15 @@ class UserAvatar extends StatelessWidget {
         onTap: () => onAvatarTap?.call(author),
         child: CircleAvatar(
           backgroundColor: hasImage ? InheritedChatTheme.of(context).theme.userAvatarImageBackgroundColor : Colors.transparent,
-          backgroundImage: hasImage
+          backgroundImage: hasImage && isOtherUserAnonymous == false
               ? NetworkImage(
                   author.imageUrl!,
                 )
               : null,
           radius: 25,
-          child: !hasImage
+          child: !hasImage || isOtherUserAnonymous == true
               ? Image.asset(
-                  'assets/icons/ic_profile_empty.png',
+                  isOtherUserAnonymous == true ? 'assets/images/img_anonymous.png' : 'assets/icons/ic_profile_empty.png',
                   width: 50,
                   height: 50,
                 )

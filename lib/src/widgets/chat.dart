@@ -86,7 +86,10 @@ class Chat extends StatefulWidget {
     this.usePreviewData = true,
     required this.user,
     this.userAgent,
+    this.isOtherUserAnonymous = false,
   });
+
+  final bool isOtherUserAnonymous;
 
   /// See [Message.avatarBuilder].
   final Widget Function(String userId)? avatarBuilder;
@@ -406,6 +409,8 @@ class ChatState extends State<Chat> {
                             onAttachmentPressed: widget.onAttachmentPressed,
                             onSendPressed: widget.onSendPressed,
                             options: widget.inputOptions,
+                            showAnonymousSendBtn: false, // sajad we are using customBottomWidget so ignore this
+                            onAnonymousBtnPressed: () {},
                           ),
                     ],
                   ),
@@ -527,6 +532,7 @@ class ChatState extends State<Chat> {
           textMessageOptions: widget.textMessageOptions,
           usePreviewData: widget.usePreviewData,
           userAgent: widget.userAgent,
+          isOtherUserAnonymous: widget.isOtherUserAnonymous,
         ),
       );
     }

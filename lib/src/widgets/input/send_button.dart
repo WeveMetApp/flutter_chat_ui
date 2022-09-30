@@ -10,33 +10,26 @@ class SendButton extends StatelessWidget {
     super.key,
     required this.onPressed,
     this.padding = EdgeInsets.zero,
+    this.showAnonymousSendBtn = false,
   });
 
   /// Callback for send button tap event.
   final VoidCallback onPressed;
 
+  final bool showAnonymousSendBtn;
+
   /// Padding around the button.
   final EdgeInsets padding;
-
   @override
-  Widget build(BuildContext context) => Container(
-        margin: InheritedChatTheme.of(context).theme.sendButtonMargin ??
-            const EdgeInsetsDirectional.fromSTEB(0, 0, 8, 0),
-        child: IconButton(
-          constraints: const BoxConstraints(
-            minHeight: 24,
-            minWidth: 24,
-          ),
-          icon: InheritedChatTheme.of(context).theme.sendButtonIcon ??
-              Image.asset(
-                'assets/icon-send.png',
-                color: InheritedChatTheme.of(context).theme.inputTextColor,
-                package: 'flutter_chat_ui',
-              ),
-          onPressed: onPressed,
-          padding: padding,
-          splashRadius: 24,
-          tooltip: InheritedL10n.of(context).l10n.sendButtonAccessibilityLabel,
+  Widget build(BuildContext context) => IconButton(
+        padding: EdgeInsets.only(right: 10), // sajad change to all zero if you want to remove the padding
+        icon: Image.asset(
+          showAnonymousSendBtn ? 'assets/ic_sendbtn_anonym.png' : 'assets/ic_sendbtn_cutom.png',
+          package: 'flutter_chat_ui',
         ),
+        onPressed: onPressed,
+        // padding: padding,
+        // splashRadius: 24,
+        tooltip: InheritedL10n.of(context).l10n.sendButtonAccessibilityLabel,
       );
 }

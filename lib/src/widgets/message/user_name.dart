@@ -10,7 +10,9 @@ class UserName extends StatelessWidget {
   const UserName({
     super.key,
     required this.author,
+    required this.isOtherUserAnonymous,
   });
+  final bool isOtherUserAnonymous;
 
   /// Author to show name from.
   final types.User author;
@@ -26,7 +28,7 @@ class UserName extends StatelessWidget {
         : Padding(
             padding: const EdgeInsets.only(bottom: 6, left: 7),
             child: Text(
-              name,
+              isOtherUserAnonymous ? 'Anonymous' : name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: theme.userNameTextStyle,

@@ -32,7 +32,10 @@ class TextMessage extends StatelessWidget {
     required this.usePreviewData,
     this.userAgent,
     required this.showBubbleNip,
+    required this.isOtherUserAnonymous,
   });
+
+  final bool isOtherUserAnonymous;
 
   /// sajad: if true, bubble will have a nip
   final bool showBubbleNip;
@@ -146,7 +149,12 @@ class TextMessage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (showName) nameBuilder?.call(message.author.id) ?? UserName(author: message.author),
+        if (showName)
+          nameBuilder?.call(message.author.id) ??
+              UserName(
+                author: message.author,
+                isOtherUserAnonymous: isOtherUserAnonymous,
+              ),
         if (enlargeEmojis)
           if (isTextMessageTextSelectable) SelectableText(message.text, style: emojiTextStyle) else Text(message.text, style: emojiTextStyle)
         else

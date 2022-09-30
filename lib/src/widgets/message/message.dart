@@ -52,7 +52,10 @@ class Message extends StatelessWidget {
     required this.textMessageOptions,
     required this.usePreviewData,
     this.userAgent,
+    required this.isOtherUserAnonymous,
   });
+
+  final bool isOtherUserAnonymous;
 
   /// This is to allow custom user avatar builder
   /// By using this we can fetch newest user info based on id
@@ -321,12 +324,7 @@ class Message extends StatelessWidget {
   }
 
   Widget _avatarBuilder() => showAvatar
-      ? avatarBuilder?.call(message.author.id) ??
-          UserAvatar(
-            author: message.author,
-            bubbleRtlAlignment: bubbleRtlAlignment,
-            onAvatarTap: onAvatarTap,
-          )
+      ? avatarBuilder?.call(message.author.id) ?? UserAvatar(author: message.author, bubbleRtlAlignment: bubbleRtlAlignment, onAvatarTap: onAvatarTap, isOtherUserAnonymous: isOtherUserAnonymous)
       : const SizedBox(width: 50);
 
   Widget _bubbleBuilder(
@@ -386,6 +384,7 @@ class Message extends StatelessWidget {
                   usePreviewData: usePreviewData,
                   userAgent: userAgent,
                   showBubbleNip: showAvatar,
+                  isOtherUserAnonymous: isOtherUserAnonymous,
                 ),
               );
       default:
