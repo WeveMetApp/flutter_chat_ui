@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_chat_ui/src/models/chat_send_button_icon.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view.dart' show PhotoViewComputedScale;
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -403,15 +404,16 @@ class ChatState extends State<Chat> {
                                 ),
                               ),
                       ),
-                      widget.customBottomWidget ??
-                          Input(
-                            isAttachmentUploading: widget.isAttachmentUploading,
-                            onAttachmentPressed: widget.onAttachmentPressed,
-                            onSendPressed: widget.onSendPressed,
-                            options: widget.inputOptions,
-                            showAnonymousSendBtn: false, // sajad we are using customBottomWidget so ignore this
-                            onAnonymousBtnPressed: () {},
-                          ),
+                      widget.customBottomWidget ?? Container()
+                      // Input(
+                      //   isAttachmentUploading: widget.isAttachmentUploading,
+                      //   onAttachmentPressed: widget.onAttachmentPressed,
+                      //   onSendPressed: widget.onSendPressed,
+                      //   options: widget.inputOptions,
+                      //   showAnonymousSendBtn: false, // sajad we are using customBottomWidget so ignore this
+                      //   sendBtn: ChatSendButtonIcon.send, // sajad we are using customBottomWidget so ignore this
+                      //   onSendBtnPressed: (sendBtn) {},
+                      // ),
                     ],
                   ),
                 ),

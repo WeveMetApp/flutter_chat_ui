@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_chat_ui/src/models/chat_send_button_icon.dart';
 
 import '../../models/input_clear_mode.dart';
 import '../../models/send_button_visibility_mode.dart';
@@ -20,9 +21,11 @@ class Input extends StatefulWidget {
     this.isAttachmentUploading,
     this.onAttachmentPressed,
     required this.onSendPressed,
-    required this.onAnonymousBtnPressed,
+    required this.onSendBtnPressed,
     this.options = const InputOptions(),
     required this.showAnonymousSendBtn,
+    required this.sendBtn,
+    required this.meUser,
   });
 
   /// Whether attachment is uploading. Will replace attachment button with a
@@ -31,7 +34,11 @@ class Input extends StatefulWidget {
   /// something is uploading so you need to set this manually.
   final bool? isAttachmentUploading;
 
+  final ChatSendButtonIcon sendBtn;
+
   final bool showAnonymousSendBtn;
+
+  final types.User meUser;
 
   /// See [AttachmentButton.onPressed].
   final VoidCallback? onAttachmentPressed;
@@ -41,7 +48,7 @@ class Input extends StatefulWidget {
   final void Function(types.PartialText) onSendPressed;
 
   /// sajad
-  final VoidCallback onAnonymousBtnPressed;
+  final Function(ChatSendButtonIcon) onSendBtnPressed;
 
   /// Customisation options for the [Input].
   final InputOptions options;
@@ -117,10 +124,14 @@ class _InputState extends State<Input> {
 
   void _handleSendPressed() {
     final trimmedText = _textController.text.trim();
-    if (widget.showAnonymousSendBtn) {
-      widget.onAnonymousBtnPressed();
+    // if (widget.showAnonymousSendBtn) {
+    //   widget.onAnonymousBtnPressed();
+    if (widget.sendBtn == ChatSendButtonIcon.anonymous) {
+      widget.onSendBtnPressed(ChatSendButtonIcon.anonymous);
 
       print('sajad showAnonymousSendBtn show pop up');
+    } else if (widget.sendBtn == ChatSendButtonIcon.profile) {
+      widget.onSendBtnPressed(ChatSendButtonIcon.profile);
     } else {
       if (trimmedText != '') {
         final partialText = types.PartialText(text: trimmedText);
@@ -210,9 +221,11 @@ class _InputState extends State<Input> {
                     height: 50,
                     width: 50,
                     child: SendButton(
+                      meUser: widget.meUser,
                       onPressed: _handleSendPressed,
                       padding: buttonPadding,
                       showAnonymousSendBtn: widget.showAnonymousSendBtn,
+                      sendBtn: widget.sendBtn,
                     ),
                   ),
                 ),
