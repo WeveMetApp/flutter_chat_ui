@@ -23,7 +23,6 @@ class Input extends StatefulWidget {
     required this.onSendPressed,
     required this.onSendBtnPressed,
     this.options = const InputOptions(),
-    required this.showAnonymousSendBtn,
     required this.sendBtn,
     required this.meUser,
   });
@@ -35,8 +34,6 @@ class Input extends StatefulWidget {
   final bool? isAttachmentUploading;
 
   final ChatSendButtonIcon sendBtn;
-
-  final bool showAnonymousSendBtn;
 
   final types.User meUser;
 
@@ -125,13 +122,12 @@ class _InputState extends State<Input> {
   void _handleSendPressed() {
     final trimmedText = _textController.text.trim();
     // if (widget.showAnonymousSendBtn) {
-    //   widget.onAnonymousBtnPressed();
     if (widget.sendBtn == ChatSendButtonIcon.anonymous) {
-      widget.onSendBtnPressed(ChatSendButtonIcon.anonymous);
+      widget.onSendBtnPressed(ChatSendButtonIcon.profile);
 
       print('sajad showAnonymousSendBtn show pop up');
     } else if (widget.sendBtn == ChatSendButtonIcon.profile) {
-      widget.onSendBtnPressed(ChatSendButtonIcon.profile);
+      widget.onSendBtnPressed(ChatSendButtonIcon.anonymous);
     } else {
       if (trimmedText != '') {
         final partialText = types.PartialText(text: trimmedText);
@@ -224,7 +220,6 @@ class _InputState extends State<Input> {
                       meUser: widget.meUser,
                       onPressed: _handleSendPressed,
                       padding: buttonPadding,
-                      showAnonymousSendBtn: widget.showAnonymousSendBtn,
                       sendBtn: widget.sendBtn,
                     ),
                   ),

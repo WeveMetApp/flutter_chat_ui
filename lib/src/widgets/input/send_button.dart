@@ -12,15 +12,12 @@ class SendButton extends StatelessWidget {
     super.key,
     required this.onPressed,
     this.padding = EdgeInsets.zero,
-    this.showAnonymousSendBtn = false,
     required this.sendBtn,
     required this.meUser,
   });
 
   /// Callback for send button tap event.
   final VoidCallback onPressed;
-
-  final bool showAnonymousSendBtn;
 
   final User meUser;
 
@@ -46,11 +43,20 @@ class SendButton extends StatelessWidget {
         );
         break;
       case ChatSendButtonIcon.profile:
-        icon = Image(
-          width: 40,
-          height: 40,
-          image: AssetImage('assets/images/img_profile_filled.png'),
-        );
+        if (meUser.imageUrl?.isEmpty ?? true) {
+          icon = Image(
+            width: 40,
+            height: 40,
+            image: AssetImage('assets/images/img_profile_filled.png'),
+          );
+        } else {
+          icon = CircleAvatar(
+            radius: 20,
+            backgroundImage: NetworkImage(meUser.imageUrl!),
+            backgroundColor: Colors.white,
+          );
+        }
+
         break;
     }
 
