@@ -21,7 +21,7 @@ class Input extends StatefulWidget {
     this.isAttachmentUploading,
     this.onAttachmentPressed,
     required this.onSendPressed,
-    required this.onSendBtnPressed,
+    required this.onAnonymousProfileBtnPressed,
     this.options = const InputOptions(),
     required this.sendBtn,
     required this.meUser,
@@ -45,7 +45,7 @@ class Input extends StatefulWidget {
   final void Function(types.PartialText) onSendPressed;
 
   /// sajad
-  final Function(ChatSendButtonIcon) onSendBtnPressed;
+  final Function(ChatSendButtonIcon) onAnonymousProfileBtnPressed;
 
   /// Customisation options for the [Input].
   final InputOptions options;
@@ -123,11 +123,11 @@ class _InputState extends State<Input> {
     final trimmedText = _textController.text.trim();
     // if (widget.showAnonymousSendBtn) {
     if (widget.sendBtn == ChatSendButtonIcon.anonymous) {
-      widget.onSendBtnPressed(ChatSendButtonIcon.profile);
+      widget.onAnonymousProfileBtnPressed(ChatSendButtonIcon.profile);
 
       print('sajad showAnonymousSendBtn show pop up');
     } else if (widget.sendBtn == ChatSendButtonIcon.profile) {
-      widget.onSendBtnPressed(ChatSendButtonIcon.anonymous);
+      widget.onAnonymousProfileBtnPressed(ChatSendButtonIcon.anonymous);
     } else {
       if (trimmedText != '') {
         final partialText = types.PartialText(text: trimmedText);
