@@ -21,9 +21,9 @@ dependencies:
   flutter_chat_types:
     path: ../flutter_chat_types
   flutter_link_previewer:
-    git:
-      url: https://github.com/sajadmaster/flutter_link_previewer
+    path: ../flutter_link_previewer
   flutter_parsed_text: ^2.2.1
+  flutter_svg: ^1.1.6
   intl: ^0.17.0
   meta: ^1.7.0
   photo_view: ^0.14.0
@@ -39,7 +39,7 @@ dev_dependencies:
 
 flutter:
   assets:
-    - packages/flutter_chat_ui/assets/ic_sendbtn_cutom.png
+    - packages/flutter_chat_ui/assets/ic_sendbtn_cutom.svg
     - packages/flutter_chat_ui/assets/ic_sendbtn_anonym.png
     - packages/flutter_chat_ui/assets/icon-arrow.png
     - packages/flutter_chat_ui/assets/icon-attachment.png

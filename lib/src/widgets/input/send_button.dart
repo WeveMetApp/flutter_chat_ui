@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_chat_types/src/user.dart';
 import 'package:flutter_chat_ui/src/models/chat_send_button_icon.dart';
 
@@ -31,9 +32,16 @@ class SendButton extends StatelessWidget {
 
     switch (sendBtn) {
       case ChatSendButtonIcon.send:
-        icon = Image.asset(
-          'assets/ic_sendbtn_cutom.png',
-          package: 'flutter_chat_ui',
+        icon = CircleAvatar(
+          radius: 20,
+          backgroundColor: Colors.white,
+          child: SvgPicture.asset(
+            'assets/ic_sendbtn_cutom.svg',
+            color: InheritedChatTheme.of(context).theme.inputBackgroundColor,
+            width: 25,
+            height: 25,
+            package: 'flutter_chat_ui',
+          ),
         );
         break;
       case ChatSendButtonIcon.anonymous:
