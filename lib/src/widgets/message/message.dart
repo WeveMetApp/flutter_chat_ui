@@ -77,10 +77,12 @@ class Message extends StatelessWidget {
   final BubbleRtlAlignment? bubbleRtlAlignment;
 
   /// Build a custom message inside predefined bubble.
-  final Widget Function(types.CustomMessage, {required int messageWidth})? customMessageBuilder;
+  final Widget Function(types.CustomMessage, {required int messageWidth})?
+      customMessageBuilder;
 
   /// Build a custom status widgets.
-  final Widget Function(types.Message message, {required BuildContext context})? customStatusBuilder;
+  final Widget Function(types.Message message, {required BuildContext context})?
+      customStatusBuilder;
 
   /// Controls the enlargement behavior of the emojis in the
   /// [types.TextMessage].
@@ -88,13 +90,15 @@ class Message extends StatelessWidget {
   final EmojiEnlargementBehavior emojiEnlargementBehavior;
 
   /// Build a file message inside predefined bubble.
-  final Widget Function(types.FileMessage, {required int messageWidth})? fileMessageBuilder;
+  final Widget Function(types.FileMessage, {required int messageWidth})?
+      fileMessageBuilder;
 
   /// Hide background for messages containing only emojis.
   final bool hideBackgroundOnEmojiMessages;
 
   /// Build an image message inside predefined bubble.
-  final Widget Function(types.ImageMessage, {required int messageWidth})? imageMessageBuilder;
+  final Widget Function(types.ImageMessage, {required int messageWidth})?
+      imageMessageBuilder;
 
   /// See [TextMessage.isTextMessageTextSelectable].
   final bool isTextMessageTextSelectable;
@@ -118,7 +122,8 @@ class Message extends StatelessWidget {
   final void Function(BuildContext context, types.Message)? onMessageLongPress;
 
   /// Called when user makes a long press on status icon in any message.
-  final void Function(BuildContext context, types.Message)? onMessageStatusLongPress;
+  final void Function(BuildContext context, types.Message)?
+      onMessageStatusLongPress;
 
   /// Called when user taps on status icon in any message.
   final void Function(BuildContext context, types.Message)? onMessageStatusTap;
@@ -130,7 +135,8 @@ class Message extends StatelessWidget {
   final void Function(types.Message, bool visible)? onMessageVisibilityChanged;
 
   /// See [TextMessage.onPreviewDataFetched].
-  final void Function(types.TextMessage, types.PreviewData)? onPreviewDataFetched;
+  final void Function(types.TextMessage, types.PreviewData)?
+      onPreviewDataFetched;
 
   /// Rounds border of the message to visually group messages together.
   final bool roundBorder;
@@ -168,13 +174,15 @@ class Message extends StatelessWidget {
     final query = MediaQuery.of(context);
     final user = InheritedUser.of(context).user;
     final currentUserIsAuthor = user.id == message.author.id;
-    final enlargeEmojis = emojiEnlargementBehavior != EmojiEnlargementBehavior.never &&
-        message is types.TextMessage &&
-        isConsistsOfEmojis(
-          emojiEnlargementBehavior,
-          message as types.TextMessage,
-        );
-    final messageBorderRadius = InheritedChatTheme.of(context).theme.messageBorderRadius;
+    final enlargeEmojis =
+        emojiEnlargementBehavior != EmojiEnlargementBehavior.never &&
+            message is types.TextMessage &&
+            isConsistsOfEmojis(
+              emojiEnlargementBehavior,
+              message as types.TextMessage,
+            );
+    final messageBorderRadius =
+        InheritedChatTheme.of(context).theme.messageBorderRadius;
     final borderRadius = bubbleRtlAlignment == BubbleRtlAlignment.left
         ? BorderRadiusDirectional.only(
             bottomEnd: Radius.circular(
@@ -219,10 +227,16 @@ class Message extends StatelessWidget {
       child: Container(
         // color: Colors.red,
         child: Row(
-          // crossAxisAlignment: currentUserIsAuthor ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-          mainAxisAlignment: currentUserIsAuthor ? MainAxisAlignment.end : MainAxisAlignment.start,
+          crossAxisAlignment: currentUserIsAuthor
+              ? CrossAxisAlignment.start
+              : CrossAxisAlignment.start,
+          mainAxisAlignment: currentUserIsAuthor
+              ? MainAxisAlignment.end
+              : MainAxisAlignment.start,
           // mainAxisSize: MainAxisSize.min,
-          textDirection: bubbleRtlAlignment == BubbleRtlAlignment.left ? null : TextDirection.ltr,
+          textDirection: bubbleRtlAlignment == BubbleRtlAlignment.left
+              ? null
+              : TextDirection.ltr,
           children: [
             if (!currentUserIsAuthor && showUserAvatars) _avatarBuilder(),
             Padding(
@@ -230,41 +244,50 @@ class Message extends StatelessWidget {
               // padding: EdgeInsets.only(top: (!currentUserIsAuthor && showUserAvatars) ? 30 : 0),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxWidth: messageWidth.toDouble(),
+                  maxWidth: messageWidth.toDouble() + 50,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     GestureDetector(
-                      onDoubleTap: () => onMessageDoubleTap?.call(context, message),
-                      onLongPress: () => onMessageLongPress?.call(context, message),
+                      onDoubleTap: () =>
+                          onMessageDoubleTap?.call(context, message),
+                      onLongPress: () =>
+                          onMessageLongPress?.call(context, message),
                       onTap: () => onMessageTap?.call(context, message),
                       child: onMessageVisibilityChanged != null
                           ? VisibilityDetector(
                               key: Key(message.id),
-                              onVisibilityChanged: (visibilityInfo) => onMessageVisibilityChanged!(
+                              onVisibilityChanged: (visibilityInfo) =>
+                                  onMessageVisibilityChanged!(
                                 message,
                                 visibilityInfo.visibleFraction > 0.1,
                               ),
                               child: _bubbleBuilder(
                                 context,
-                                borderRadius.resolve(Directionality.of(context)),
+                                borderRadius
+                                    .resolve(Directionality.of(context)),
                                 currentUserIsAuthor,
                                 enlargeEmojis,
                               ),
                             )
                           : Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: currentUserIsAuthor ? MainAxisAlignment.end : MainAxisAlignment.start,
+                              mainAxisAlignment: currentUserIsAuthor
+                                  ? MainAxisAlignment.end
+                                  : MainAxisAlignment.start,
                               children: [
                                 // sajad message sent time next to message
                                 currentUserIsAuthor && !roundBorder
                                     ? Padding(
-                                        padding: const EdgeInsets.only(right: 5),
+                                        padding:
+                                            const EdgeInsets.only(right: 5),
                                         child: Text(
                                           message.createdAt != null
                                               ? intl.DateFormat('HH:mm').format(
-                                                  DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
+                                                  DateTime
+                                                      .fromMillisecondsSinceEpoch(
+                                                          message.createdAt!),
                                                 )
                                               : 'nf',
                                           style: TextStyle(
@@ -277,7 +300,8 @@ class Message extends StatelessWidget {
                                     : Container(),
                                 _bubbleBuilder(
                                   context,
-                                  borderRadius.resolve(Directionality.of(context)),
+                                  borderRadius
+                                      .resolve(Directionality.of(context)),
                                   currentUserIsAuthor,
                                   enlargeEmojis,
                                 ),
@@ -287,7 +311,9 @@ class Message extends StatelessWidget {
                                         child: Text(
                                           message.createdAt != null
                                               ? intl.DateFormat('HH:mm').format(
-                                                  DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
+                                                  DateTime
+                                                      .fromMillisecondsSinceEpoch(
+                                                          message.createdAt!),
                                                 )
                                               : 'nf',
                                           style: TextStyle(
@@ -311,9 +337,12 @@ class Message extends StatelessWidget {
                 // padding: InheritedChatTheme.of(context).theme.statusIconPadding,
                 child: showStatus
                     ? GestureDetector(
-                        onLongPress: () => onMessageStatusLongPress?.call(context, message),
+                        onLongPress: () =>
+                            onMessageStatusLongPress?.call(context, message),
                         onTap: () => onMessageStatusTap?.call(context, message),
-                        child: customStatusBuilder != null ? customStatusBuilder!(message, context: context) : MessageStatus(status: message.status),
+                        child: customStatusBuilder != null
+                            ? customStatusBuilder!(message, context: context)
+                            : MessageStatus(status: message.status),
                       )
                     : null,
               ),
@@ -324,7 +353,12 @@ class Message extends StatelessWidget {
   }
 
   Widget _avatarBuilder() => showAvatar
-      ? avatarBuilder?.call(message.author.id) ?? UserAvatar(author: message.author, bubbleRtlAlignment: bubbleRtlAlignment, onAvatarTap: onAvatarTap, isOtherUserAnonymous: isOtherUserAnonymous)
+      ? avatarBuilder?.call(message.author.id) ??
+          UserAvatar(
+              author: message.author,
+              bubbleRtlAlignment: bubbleRtlAlignment,
+              onAvatarTap: onAvatarTap,
+              isOtherUserAnonymous: isOtherUserAnonymous)
       : const SizedBox(width: 50);
 
   Widget _bubbleBuilder(
@@ -355,13 +389,19 @@ class Message extends StatelessWidget {
     switch (message.type) {
       case types.MessageType.custom:
         final customMessage = message as types.CustomMessage;
-        return customMessageBuilder != null ? customMessageBuilder!(customMessage, messageWidth: messageWidth) : const SizedBox();
+        return customMessageBuilder != null
+            ? customMessageBuilder!(customMessage, messageWidth: messageWidth)
+            : const SizedBox();
       case types.MessageType.file:
         final fileMessage = message as types.FileMessage;
-        return fileMessageBuilder != null ? fileMessageBuilder!(fileMessage, messageWidth: messageWidth) : FileMessage(message: fileMessage);
+        return fileMessageBuilder != null
+            ? fileMessageBuilder!(fileMessage, messageWidth: messageWidth)
+            : FileMessage(message: fileMessage);
       case types.MessageType.image:
         final imageMessage = message as types.ImageMessage;
-        return imageMessageBuilder != null ? imageMessageBuilder!(imageMessage, messageWidth: messageWidth) : ImageMessage(message: imageMessage, messageWidth: messageWidth);
+        return imageMessageBuilder != null
+            ? imageMessageBuilder!(imageMessage, messageWidth: messageWidth)
+            : ImageMessage(message: imageMessage, messageWidth: messageWidth);
       case types.MessageType.text:
         final textMessage = message as types.TextMessage;
         return textMessageBuilder != null
