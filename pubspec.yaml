@@ -23,7 +23,8 @@ dependencies:
   flutter_link_previewer:
     path: ../flutter_link_previewer
   flutter_parsed_text: ^2.2.1
-  flutter_svg: ^1.1.6
+  flutter_svg: ^1.1.5
+  flutter_svg_provider: ^1.0.3
   intl: ^0.17.0
   meta: ^1.7.0
   photo_view: ^0.14.0
@@ -39,8 +40,7 @@ dev_dependencies:
 
 flutter:
   assets:
-    - packages/flutter_chat_ui/assets/ic_sendbtn_cutom.svg
-    - packages/flutter_chat_ui/assets/ic_sendbtn_anonym.png
+    - packages/flutter_chat_ui/assets/ic_sendbtn.svg
     - packages/flutter_chat_ui/assets/icon-arrow.png
     - packages/flutter_chat_ui/assets/icon-attachment.png
     - packages/flutter_chat_ui/assets/icon-delivered.png

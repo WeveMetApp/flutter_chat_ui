@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_chat_types/src/user.dart';
 import 'package:flutter_chat_ui/src/models/chat_send_button_icon.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart' as SvgProvider;
 
 import '../state/inherited_chat_theme.dart';
 import '../state/inherited_l10n.dart';
@@ -36,7 +37,7 @@ class SendButton extends StatelessWidget {
           radius: 20,
           backgroundColor: Colors.white,
           child: SvgPicture.asset(
-            'assets/ic_sendbtn_cutom.svg',
+            'assets/ic_sendbtn.svg',
             color: InheritedChatTheme.of(context).theme.inputBackgroundColor,
             width: 25,
             height: 25,
@@ -45,9 +46,10 @@ class SendButton extends StatelessWidget {
         );
         break;
       case ChatSendButtonIcon.anonymous:
-        icon = Image.asset(
-          'assets/ic_sendbtn_anonym.png',
-          package: 'flutter_chat_ui',
+        icon = Image(
+          width: 40,
+          height: 40,
+          image: SvgProvider.Svg('assets/images/img_anonymous.svg'),
         );
         break;
       case ChatSendButtonIcon.profile:
@@ -55,7 +57,7 @@ class SendButton extends StatelessWidget {
           icon = Image(
             width: 40,
             height: 40,
-            image: AssetImage('assets/images/img_profile_filled.png'),
+            image: SvgProvider.Svg('assets/images/img_profile.svg'),
           );
         } else {
           icon = CircleAvatar(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../models/bubble_rtl_alignment.dart';
 import '../../util.dart';
@@ -43,7 +44,8 @@ class UserAvatar extends StatelessWidget {
       child: GestureDetector(
         onTap: () => onAvatarTap?.call(author),
         child: CircleAvatar(
-          backgroundColor: hasImage ? InheritedChatTheme.of(context).theme.userAvatarImageBackgroundColor : Colors.transparent,
+          backgroundColor:
+              hasImage ? InheritedChatTheme.of(context).theme.userAvatarImageBackgroundColor : Colors.transparent,
           backgroundImage: hasImage && isOtherUserAnonymous == false
               ? NetworkImage(
                   author.imageUrl!,
@@ -51,8 +53,8 @@ class UserAvatar extends StatelessWidget {
               : null,
           radius: 25,
           child: !hasImage || isOtherUserAnonymous == true
-              ? Image.asset(
-                  isOtherUserAnonymous == true ? 'assets/images/img_anonymous.png' : 'assets/icons/ic_profile_empty.png',
+              ? SvgPicture.asset(
+                  isOtherUserAnonymous == true ? 'assets/images/img_anonymous.svg' : 'assets/images/img_profile.svg',
                   width: 50,
                   height: 50,
                 )
