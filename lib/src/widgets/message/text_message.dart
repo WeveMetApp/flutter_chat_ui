@@ -73,7 +73,8 @@ class TextMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final enlargeEmojis = emojiEnlargementBehavior != EmojiEnlargementBehavior.never && isConsistsOfEmojis(emojiEnlargementBehavior, message);
+    final enlargeEmojis = emojiEnlargementBehavior != EmojiEnlargementBehavior.never &&
+        isConsistsOfEmojis(emojiEnlargementBehavior, message);
     final theme = InheritedChatTheme.of(context).theme;
     final user = InheritedUser.of(context).user;
     final width = MediaQuery.of(context).size.width;
@@ -103,10 +104,12 @@ class TextMessage extends StatelessWidget {
     double width,
     BuildContext context,
   ) {
-    final linkDescriptionTextStyle =
-        user.id == message.author.id ? InheritedChatTheme.of(context).theme.sentMessageLinkDescriptionTextStyle : InheritedChatTheme.of(context).theme.receivedMessageLinkDescriptionTextStyle;
-    final linkTitleTextStyle =
-        user.id == message.author.id ? InheritedChatTheme.of(context).theme.sentMessageLinkTitleTextStyle : InheritedChatTheme.of(context).theme.receivedMessageLinkTitleTextStyle;
+    final linkDescriptionTextStyle = user.id == message.author.id
+        ? InheritedChatTheme.of(context).theme.sentMessageLinkDescriptionTextStyle
+        : InheritedChatTheme.of(context).theme.receivedMessageLinkDescriptionTextStyle;
+    final linkTitleTextStyle = user.id == message.author.id
+        ? InheritedChatTheme.of(context).theme.sentMessageLinkTitleTextStyle
+        : InheritedChatTheme.of(context).theme.receivedMessageLinkTitleTextStyle;
 
     return LinkPreview(
       enableAnimation: true,
@@ -140,11 +143,17 @@ class TextMessage extends StatelessWidget {
     bool enlargeEmojis,
   ) {
     final theme = InheritedChatTheme.of(context).theme;
-    final bodyLinkTextStyle = user.id == message.author.id ? InheritedChatTheme.of(context).theme.sentMessageBodyLinkTextStyle : InheritedChatTheme.of(context).theme.receivedMessageBodyLinkTextStyle;
-    final bodyTextStyle = user.id == message.author.id ? theme.sentMessageBodyTextStyle : theme.receivedMessageBodyTextStyle;
-    final boldTextStyle = user.id == message.author.id ? theme.sentMessageBodyBoldTextStyle : theme.receivedMessageBodyBoldTextStyle;
-    final codeTextStyle = user.id == message.author.id ? theme.sentMessageBodyCodeTextStyle : theme.receivedMessageBodyCodeTextStyle;
-    final emojiTextStyle = user.id == message.author.id ? theme.sentEmojiMessageTextStyle : theme.receivedEmojiMessageTextStyle;
+    final bodyLinkTextStyle = user.id == message.author.id
+        ? InheritedChatTheme.of(context).theme.sentMessageBodyLinkTextStyle
+        : InheritedChatTheme.of(context).theme.receivedMessageBodyLinkTextStyle;
+    final bodyTextStyle =
+        user.id == message.author.id ? theme.sentMessageBodyTextStyle : theme.receivedMessageBodyTextStyle;
+    final boldTextStyle =
+        user.id == message.author.id ? theme.sentMessageBodyBoldTextStyle : theme.receivedMessageBodyBoldTextStyle;
+    final codeTextStyle =
+        user.id == message.author.id ? theme.sentMessageBodyCodeTextStyle : theme.receivedMessageBodyCodeTextStyle;
+    final emojiTextStyle =
+        user.id == message.author.id ? theme.sentEmojiMessageTextStyle : theme.receivedEmojiMessageTextStyle;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -156,7 +165,10 @@ class TextMessage extends StatelessWidget {
                 isOtherUserAnonymous: isOtherUserAnonymous,
               ),
         if (enlargeEmojis)
-          if (isTextMessageTextSelectable) SelectableText(message.text, style: emojiTextStyle) else Text(message.text, style: emojiTextStyle)
+          if (isTextMessageTextSelectable)
+            SelectableText(message.text, style: emojiTextStyle)
+          else
+            Text(message.text, style: emojiTextStyle)
         else
           Container(
             // color: Colors.orange,
@@ -176,10 +188,7 @@ class TextMessage extends StatelessWidget {
                         }
                       },
                       pattern: regexEmail,
-                      style: bodyLinkTextStyle ??
-                          bodyTextStyle.copyWith(
-                            decoration: TextDecoration.underline,
-                          ),
+                      style: bodyLinkTextStyle ?? bodyTextStyle.copyWith(decoration: TextDecoration.underline),
                     ),
                     MatchText(
                       onTap: (urlText) async {
@@ -203,10 +212,7 @@ class TextMessage extends StatelessWidget {
                         }
                       },
                       pattern: regexLink,
-                      style: bodyLinkTextStyle ??
-                          bodyTextStyle.copyWith(
-                            decoration: TextDecoration.underline,
-                          ),
+                      style: bodyLinkTextStyle ?? bodyTextStyle.copyWith(decoration: TextDecoration.underline),
                     ),
                     MatchText(
                       pattern: PatternStyle.bold.pattern,

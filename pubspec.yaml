@@ -1,4 +1,5 @@
 name: flutter_chat_ui
+publish_to: none
 description: >
   Actively maintained, community-driven chat UI implementation with an optional
   Firebase BaaS.
