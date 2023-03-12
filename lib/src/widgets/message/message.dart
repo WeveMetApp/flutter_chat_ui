@@ -216,111 +216,90 @@ class Message extends StatelessWidget {
               left: 10 + (kIsWeb ? 0 : query.padding.left),
               right: kIsWeb ? 0 : query.padding.right,
             ),
-      child: Container(
-        // color: Colors.red,
-        child: Row(
-          crossAxisAlignment: currentUserIsAuthor ? CrossAxisAlignment.start : CrossAxisAlignment.start,
-          mainAxisAlignment: currentUserIsAuthor ? MainAxisAlignment.end : MainAxisAlignment.start,
-          // mainAxisSize: MainAxisSize.min,
-          textDirection: bubbleRtlAlignment == BubbleRtlAlignment.left ? null : TextDirection.ltr,
-          children: [
-            if (!currentUserIsAuthor && showUserAvatars) _avatarBuilder(),
-            Padding(
-              padding: EdgeInsets.zero,
-              // padding: EdgeInsets.only(top: (!currentUserIsAuthor && showUserAvatars) ? 30 : 0),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxWidth: messageWidth.toDouble() + 50,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    GestureDetector(
-                      onDoubleTap: () => onMessageDoubleTap?.call(context, message),
-                      onLongPress: () => onMessageLongPress?.call(context, message),
-                      onTap: () => onMessageTap?.call(context, message),
-                      child: onMessageVisibilityChanged != null
-                          ? VisibilityDetector(
-                              key: Key(message.id),
-                              onVisibilityChanged: (visibilityInfo) => onMessageVisibilityChanged!(
-                                message,
-                                visibilityInfo.visibleFraction > 0.1,
-                              ),
-                              child: _bubbleBuilder(
-                                context,
-                                borderRadius.resolve(Directionality.of(context)),
-                                currentUserIsAuthor,
-                                enlargeEmojis,
-                              ),
-                            )
-                          : Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: currentUserIsAuthor ? MainAxisAlignment.end : MainAxisAlignment.start,
-                              children: [
-                                // sajad message sent time next to message
-                                currentUserIsAuthor && !roundBorder
-                                    ? Padding(
-                                        padding: const EdgeInsets.only(right: 5),
-                                        child: Text(
-                                          message.createdAt != null
-                                              ? intl.DateFormat('HH:mm').format(
-                                                  DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
-                                                )
-                                              : 'nf',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.w200,
-                                          ),
-                                        ),
-                                      )
-                                    : Container(),
-                                _bubbleBuilder(
-                                  context,
-                                  borderRadius.resolve(Directionality.of(context)),
-                                  currentUserIsAuthor,
-                                  enlargeEmojis,
-                                ),
-                                !currentUserIsAuthor && !roundBorder
-                                    ? Padding(
-                                        padding: const EdgeInsets.only(left: 5),
-                                        child: Text(
-                                          message.createdAt != null
-                                              ? intl.DateFormat('HH:mm').format(
-                                                  DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
-                                                )
-                                              : 'nf',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey,
-                                            fontWeight: FontWeight.w200,
-                                          ),
-                                        ),
-                                      )
-                                    : Container(),
-                              ],
-                            ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            if (currentUserIsAuthor)
-              Padding(
-                padding: EdgeInsets.zero,
-                // padding: InheritedChatTheme.of(context).theme.statusIconPadding,
-                child: showStatus
-                    ? GestureDetector(
-                        onLongPress: () => onMessageStatusLongPress?.call(context, message),
-                        onTap: () => onMessageStatusTap?.call(context, message),
-                        child: customStatusBuilder != null
-                            ? customStatusBuilder!(message, context: context)
-                            : MessageStatus(status: message.status),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: currentUserIsAuthor ? MainAxisAlignment.end : MainAxisAlignment.start,
+        textDirection: bubbleRtlAlignment == BubbleRtlAlignment.left ? null : TextDirection.ltr,
+        children: [
+          if (!currentUserIsAuthor && showUserAvatars) _avatarBuilder(),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              GestureDetector(
+                onDoubleTap: () => onMessageDoubleTap?.call(context, message),
+                onLongPress: () => onMessageLongPress?.call(context, message),
+                onTap: () => onMessageTap?.call(context, message),
+                child: onMessageVisibilityChanged != null
+                    ? VisibilityDetector(
+                        key: Key(message.id),
+                        onVisibilityChanged: (visibilityInfo) => onMessageVisibilityChanged!(
+                          message,
+                          visibilityInfo.visibleFraction > 0.1,
+                        ),
+                        child: _bubbleBuilder(
+                          context,
+                          borderRadius.resolve(Directionality.of(context)),
+                          currentUserIsAuthor,
+                          enlargeEmojis,
+                        ),
                       )
-                    : null,
+                    : Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: currentUserIsAuthor ? MainAxisAlignment.end : MainAxisAlignment.start,
+                        children: [
+                          if (currentUserIsAuthor && !roundBorder && message.createdAt != null)
+                            Padding(
+                              padding: EdgeInsets.only(right: 5),
+                              child: Text(
+                                intl.DateFormat('HH:mm').format(
+                                  DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
+                                ),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.w200,
+                                ),
+                              ),
+                            ),
+                          _bubbleBuilder(
+                            context,
+                            borderRadius.resolve(Directionality.of(context)),
+                            currentUserIsAuthor,
+                            enlargeEmojis,
+                          ),
+                          if (!currentUserIsAuthor && !roundBorder && message.createdAt != null)
+                            Padding(
+                              padding: EdgeInsets.only(left: 5),
+                              child: Text(
+                                intl.DateFormat('HH:mm').format(
+                                  DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
+                                ),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.w200,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
               ),
-          ],
-        ),
+            ],
+          ),
+          if (currentUserIsAuthor)
+            Padding(
+              padding: InheritedChatTheme.of(context).theme.statusIconPadding,
+              child: showStatus
+                  ? GestureDetector(
+                      onLongPress: () => onMessageStatusLongPress?.call(context, message),
+                      onTap: () => onMessageStatusTap?.call(context, message),
+                      child: customStatusBuilder != null
+                          ? customStatusBuilder!(message, context: context)
+                          : MessageStatus(status: message.status),
+                    )
+                  : null,
+            ),
+        ],
       ),
     );
   }
@@ -328,10 +307,11 @@ class Message extends StatelessWidget {
   Widget _avatarBuilder() => showAvatar
       ? avatarBuilder?.call(message.author.id) ??
           UserAvatar(
-              author: message.author,
-              bubbleRtlAlignment: bubbleRtlAlignment,
-              onAvatarTap: onAvatarTap,
-              isOtherUserAnonymous: isOtherUserAnonymous)
+            author: message.author,
+            bubbleRtlAlignment: bubbleRtlAlignment,
+            onAvatarTap: onAvatarTap,
+            isOtherUserAnonymous: isOtherUserAnonymous,
+          )
       : const SizedBox(width: 50);
 
   Widget _bubbleBuilder(
@@ -346,17 +326,7 @@ class Message extends StatelessWidget {
               message: message,
               nextMessageInGroup: roundBorder,
             )
-          : enlargeEmojis && hideBackgroundOnEmojiMessages
-              ? _messageBuilder()
-              : Container(
-                  decoration: BoxDecoration(
-                    borderRadius: borderRadius,
-                    // color: Colors.blue,
-                    // color: Colors.transparent,
-                    // color: !currentUserIsAuthor || message.type == types.MessageType.image ? InheritedChatTheme.of(context).theme.secondaryColor : InheritedChatTheme.of(context).theme.primaryColor,
-                  ),
-                  child: _messageBuilder(),
-                );
+          : _messageBuilder();
 
   Widget _messageBuilder() {
     switch (message.type) {
@@ -374,7 +344,12 @@ class Message extends StatelessWidget {
         final imageMessage = message as types.ImageMessage;
         return imageMessageBuilder != null
             ? imageMessageBuilder!(imageMessage, messageWidth: messageWidth)
-            : ImageMessage(message: imageMessage, messageWidth: messageWidth);
+            : ImageMessage(
+                message: imageMessage,
+                messageWidth: messageWidth,
+                showName: showName,
+                isOtherUserAnonymous: isOtherUserAnonymous,
+              );
       case types.MessageType.text:
         final textMessage = message as types.TextMessage;
         return textMessageBuilder != null
@@ -384,7 +359,6 @@ class Message extends StatelessWidget {
                 showName: showName,
               )
             : Container(
-                // color: Colors.yellow,
                 child: TextMessage(
                   emojiEnlargementBehavior: emojiEnlargementBehavior,
                   hideBackgroundOnEmojiMessages: hideBackgroundOnEmojiMessages,

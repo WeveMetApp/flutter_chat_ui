@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
+import '../../../flutter_chat_ui.dart';
 import '../../conditional/conditional.dart';
 import '../../util.dart';
 import '../state/inherited_chat_theme.dart';
@@ -16,6 +17,9 @@ class ImageMessage extends StatefulWidget {
     super.key,
     required this.message,
     required this.messageWidth,
+    this.nameBuilder,
+    required this.showName,
+    required this.isOtherUserAnonymous,
   });
 
   /// [types.ImageMessage].
@@ -23,6 +27,15 @@ class ImageMessage extends StatefulWidget {
 
   /// Maximum message width.
   final int messageWidth;
+
+  /// This is to allow custom user name builder
+  /// By using this we can fetch newest user info based on id
+  final Widget Function(String userId)? nameBuilder;
+
+  /// Show user name for the received message. Useful for a group chat.
+  final bool showName;
+
+  final bool isOtherUserAnonymous;
 
   @override
   State<ImageMessage> createState() => _ImageMessageState();
@@ -75,41 +88,50 @@ class _ImageMessageState extends State<ImageMessage> {
           children: [
             Container(
               height: 64,
-              margin: EdgeInsetsDirectional.fromSTEB(
-                InheritedChatTheme.of(context).theme.messageInsetsVertical,
-                InheritedChatTheme.of(context).theme.messageInsetsVertical,
-                16,
-                InheritedChatTheme.of(context).theme.messageInsetsVertical,
+              margin: EdgeInsets.symmetric(
+                vertical: InheritedChatTheme.of(context).theme.messageInsetsVertical,
+                horizontal: 0,
               ),
               width: 64,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Image(
-                  fit: BoxFit.cover,
-                  image: _image!,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (widget.showName)
+                    widget.nameBuilder?.call(widget.message.author.id) ??
+                        UserName(
+                          author: widget.message.author,
+                          isOtherUserAnonymous: widget.isOtherUserAnonymous,
+                        ),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(15),
+                    child: Image(
+                      fit: BoxFit.cover,
+                      image: _image!,
+                    ),
+                  ),
+                ],
               ),
             ),
             Flexible(
               child: Container(
-                margin: EdgeInsetsDirectional.fromSTEB(
-                  0,
-                  InheritedChatTheme.of(context).theme.messageInsetsVertical,
-                  InheritedChatTheme.of(context).theme.messageInsetsHorizontal,
-                  InheritedChatTheme.of(context).theme.messageInsetsVertical,
+                margin: EdgeInsets.symmetric(
+                  vertical: InheritedChatTheme.of(context).theme.messageInsetsVertical,
+                  horizontal: 0,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (widget.showName)
+                      widget.nameBuilder?.call(widget.message.author.id) ??
+                          UserName(
+                            author: widget.message.author,
+                            isOtherUserAnonymous: widget.isOtherUserAnonymous,
+                          ),
                     Text(
                       widget.message.name,
                       style: user.id == widget.message.author.id
-                          ? InheritedChatTheme.of(context)
-                              .theme
-                              .sentMessageBodyTextStyle
-                          : InheritedChatTheme.of(context)
-                              .theme
-                              .receivedMessageBodyTextStyle,
+                          ? InheritedChatTheme.of(context).theme.sentMessageBodyTextStyle
+                          : InheritedChatTheme.of(context).theme.receivedMessageBodyTextStyle,
                       textWidthBasis: TextWidthBasis.longestLine,
                     ),
                     Container(
@@ -119,12 +141,8 @@ class _ImageMessageState extends State<ImageMessage> {
                       child: Text(
                         formatBytes(widget.message.size.truncate()),
                         style: user.id == widget.message.author.id
-                            ? InheritedChatTheme.of(context)
-                                .theme
-                                .sentMessageCaptionTextStyle
-                            : InheritedChatTheme.of(context)
-                                .theme
-                                .receivedMessageCaptionTextStyle,
+                            ? InheritedChatTheme.of(context).theme.sentMessageCaptionTextStyle
+                            : InheritedChatTheme.of(context).theme.receivedMessageCaptionTextStyle,
                       ),
                     ),
                   ],
@@ -135,18 +153,33 @@ class _ImageMessageState extends State<ImageMessage> {
         ),
       );
     } else {
-      return Container(
-        constraints: BoxConstraints(
-          maxHeight: widget.messageWidth.toDouble(),
-          minWidth: 170,
-        ),
-        child: AspectRatio(
-          aspectRatio: _size.aspectRatio > 0 ? _size.aspectRatio : 1,
-          child: Image(
-            fit: BoxFit.contain,
-            image: _image!,
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (widget.showName)
+            widget.nameBuilder?.call(widget.message.author.id) ??
+                UserName(
+                  author: widget.message.author,
+                  isOtherUserAnonymous: widget.isOtherUserAnonymous,
+                ),
+          Container(
+            margin: EdgeInsets.symmetric(
+              vertical: InheritedChatTheme.of(context).theme.messageInsetsVertical,
+              horizontal: 0,
+            ),
+            constraints: BoxConstraints(
+              maxWidth: widget.messageWidth.toDouble(),
+              minWidth: 170,
+            ),
+            child: AspectRatio(
+              aspectRatio: _size.aspectRatio > 0 ? _size.aspectRatio : 1,
+              child: Image(
+                fit: BoxFit.contain,
+                image: _image!,
+              ),
+            ),
           ),
-        ),
+        ],
       );
     }
   }

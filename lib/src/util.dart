@@ -129,18 +129,15 @@ List<Object> calculateChatMessages(
 
       final isFirstInGroup = notMyMessage &&
           ((message.author.id != previousMessage?.author.id) ||
-              (messageHasCreatedAt && previousMessage?.createdAt != null && message.createdAt! - previousMessage!.createdAt! > groupMessagesThreshold));
+              (messageHasCreatedAt &&
+                  previousMessage?.createdAt != null &&
+                  message.createdAt! - previousMessage!.createdAt! > groupMessagesThreshold));
 
       if (isFirstInGroup) {
-        shouldShowName = false;
-        if (message.type == types.MessageType.text) {
-          showName = true;
-        } else {
-          shouldShowName = true;
-        }
+        shouldShowName = true;
       }
 
-      if (message.type == types.MessageType.text && shouldShowName) {
+      if (shouldShowName) {
         showName = true;
         shouldShowName = false;
       }
@@ -149,9 +146,12 @@ List<Object> calculateChatMessages(
     if (messageHasCreatedAt && nextMessageHasCreatedAt) {
       nextMessageDateThreshold = nextMessage!.createdAt! - message.createdAt! >= dateHeaderThreshold;
 
-      nextMessageDifferentDay = DateTime.fromMillisecondsSinceEpoch(message.createdAt!).day != DateTime.fromMillisecondsSinceEpoch(nextMessage.createdAt!).day;
+      nextMessageDifferentDay = DateTime.fromMillisecondsSinceEpoch(message.createdAt!).day !=
+          DateTime.fromMillisecondsSinceEpoch(nextMessage.createdAt!).day;
 
-      nextMessageInGroup = nextMessageSameAuthor && message.id != lastReadMessageId && nextMessage.createdAt! - message.createdAt! <= groupMessagesThreshold;
+      nextMessageInGroup = nextMessageSameAuthor &&
+          message.id != lastReadMessageId &&
+          nextMessage.createdAt! - message.createdAt! <= groupMessagesThreshold;
     }
 
     if (isFirst && messageHasCreatedAt) {

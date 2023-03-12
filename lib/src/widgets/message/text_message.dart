@@ -35,11 +35,6 @@ class TextMessage extends StatelessWidget {
     required this.isOtherUserAnonymous,
   });
 
-  final bool isOtherUserAnonymous;
-
-  /// sajad: if true, bubble will have a nip
-  final bool showBubbleNip;
-
   /// See [Message.emojiEnlargementBehavior].
   final EmojiEnlargementBehavior emojiEnlargementBehavior;
 
@@ -71,6 +66,11 @@ class TextMessage extends StatelessWidget {
   /// User agent to fetch preview data with.
   final String? userAgent;
 
+  /// If true, bubble will have a nip
+  final bool showBubbleNip;
+
+  final bool isOtherUserAnonymous;
+
   @override
   Widget build(BuildContext context) {
     final enlargeEmojis = emojiEnlargementBehavior != EmojiEnlargementBehavior.never &&
@@ -79,22 +79,7 @@ class TextMessage extends StatelessWidget {
     final user = InheritedUser.of(context).user;
     final width = MediaQuery.of(context).size.width;
 
-    // if (usePreviewData && onPreviewDataFetched != null) {
-    //   final urlRegexp = RegExp(regexLink, caseSensitive: false);
-    //   final matches = urlRegexp.allMatches(message.text);
-
-    //   if (matches.isNotEmpty) {
-    //     return _linkPreview(user, width, context);
-    //   }
-    // }
-
     return Container(
-      // width: double.infinity,
-      // color: Colors.purple,
-      // margin: EdgeInsets.symmetric(
-      //   horizontal: theme.messageInsetsHorizontal,
-      //   vertical: theme.messageInsetsVertical,
-      // ),
       child: _textWidgetBuilder(user, context, enlargeEmojis),
     );
   }
@@ -171,96 +156,92 @@ class TextMessage extends StatelessWidget {
             Text(message.text, style: emojiTextStyle)
         else
           Container(
-            // color: Colors.orange,
             child: BubbleSpecialOne(
               tail: true,
               isSender: user.id == message.author.id,
               color: user.id == message.author.id ? Colors.black : const Color(0xffE8E8E8),
-              text: Padding(
-                padding: const EdgeInsets.all(5),
-                child: ParsedText(
-                  parse: [
-                    MatchText(
-                      onTap: (mail) async {
-                        final url = Uri(scheme: 'mailto', path: mail);
-                        if (await canLaunchUrl(url)) {
-                          await launchUrl(url);
+              text: ParsedText(
+                parse: [
+                  MatchText(
+                    onTap: (mail) async {
+                      final url = Uri(scheme: 'mailto', path: mail);
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(url);
+                      }
+                    },
+                    pattern: regexEmail,
+                    style: bodyLinkTextStyle ?? bodyTextStyle.copyWith(decoration: TextDecoration.underline),
+                  ),
+                  MatchText(
+                    onTap: (urlText) async {
+                      final protocolIdentifierRegex = RegExp(
+                        r'^((http|ftp|https):\/\/)',
+                        caseSensitive: false,
+                      );
+                      if (!urlText.startsWith(protocolIdentifierRegex)) {
+                        urlText = 'https://$urlText';
+                      }
+                      if (options.onLinkPressed != null) {
+                        options.onLinkPressed!(urlText);
+                      } else {
+                        final url = Uri.tryParse(urlText);
+                        if (url != null && await canLaunchUrl(url)) {
+                          await launchUrl(
+                            url,
+                            mode: LaunchMode.externalApplication,
+                          );
                         }
-                      },
-                      pattern: regexEmail,
-                      style: bodyLinkTextStyle ?? bodyTextStyle.copyWith(decoration: TextDecoration.underline),
-                    ),
-                    MatchText(
-                      onTap: (urlText) async {
-                        final protocolIdentifierRegex = RegExp(
-                          r'^((http|ftp|https):\/\/)',
-                          caseSensitive: false,
-                        );
-                        if (!urlText.startsWith(protocolIdentifierRegex)) {
-                          urlText = 'https://$urlText';
-                        }
-                        if (options.onLinkPressed != null) {
-                          options.onLinkPressed!(urlText);
-                        } else {
-                          final url = Uri.tryParse(urlText);
-                          if (url != null && await canLaunchUrl(url)) {
-                            await launchUrl(
-                              url,
-                              mode: LaunchMode.externalApplication,
-                            );
-                          }
-                        }
-                      },
-                      pattern: regexLink,
-                      style: bodyLinkTextStyle ?? bodyTextStyle.copyWith(decoration: TextDecoration.underline),
-                    ),
-                    MatchText(
-                      pattern: PatternStyle.bold.pattern,
-                      style: boldTextStyle ?? bodyTextStyle.merge(PatternStyle.bold.textStyle),
-                      renderText: ({required String str, required String pattern}) => {
-                        'display': str.replaceAll(
-                          PatternStyle.bold.from,
-                          PatternStyle.bold.replace,
-                        ),
-                      },
-                    ),
-                    MatchText(
-                      pattern: PatternStyle.italic.pattern,
-                      style: bodyTextStyle.merge(PatternStyle.italic.textStyle),
-                      renderText: ({required String str, required String pattern}) => {
-                        'display': str.replaceAll(
-                          PatternStyle.italic.from,
-                          PatternStyle.italic.replace,
-                        ),
-                      },
-                    ),
-                    MatchText(
-                      pattern: PatternStyle.lineThrough.pattern,
-                      style: bodyTextStyle.merge(PatternStyle.lineThrough.textStyle),
-                      renderText: ({required String str, required String pattern}) => {
-                        'display': str.replaceAll(
-                          PatternStyle.lineThrough.from,
-                          PatternStyle.lineThrough.replace,
-                        ),
-                      },
-                    ),
-                    MatchText(
-                      pattern: PatternStyle.code.pattern,
-                      style: codeTextStyle ?? bodyTextStyle.merge(PatternStyle.code.textStyle),
-                      renderText: ({required String str, required String pattern}) => {
-                        'display': str.replaceAll(
-                          PatternStyle.code.from,
-                          PatternStyle.code.replace,
-                        ),
-                      },
-                    ),
-                  ],
-                  regexOptions: const RegexOptions(multiLine: true, dotAll: true),
-                  selectable: isTextMessageTextSelectable,
-                  style: bodyTextStyle,
-                  text: message.text,
-                  textWidthBasis: TextWidthBasis.longestLine,
-                ),
+                      }
+                    },
+                    pattern: regexLink,
+                    style: bodyLinkTextStyle ?? bodyTextStyle.copyWith(decoration: TextDecoration.underline),
+                  ),
+                  MatchText(
+                    pattern: PatternStyle.bold.pattern,
+                    style: boldTextStyle ?? bodyTextStyle.merge(PatternStyle.bold.textStyle),
+                    renderText: ({required String str, required String pattern}) => {
+                      'display': str.replaceAll(
+                        PatternStyle.bold.from,
+                        PatternStyle.bold.replace,
+                      ),
+                    },
+                  ),
+                  MatchText(
+                    pattern: PatternStyle.italic.pattern,
+                    style: bodyTextStyle.merge(PatternStyle.italic.textStyle),
+                    renderText: ({required String str, required String pattern}) => {
+                      'display': str.replaceAll(
+                        PatternStyle.italic.from,
+                        PatternStyle.italic.replace,
+                      ),
+                    },
+                  ),
+                  MatchText(
+                    pattern: PatternStyle.lineThrough.pattern,
+                    style: bodyTextStyle.merge(PatternStyle.lineThrough.textStyle),
+                    renderText: ({required String str, required String pattern}) => {
+                      'display': str.replaceAll(
+                        PatternStyle.lineThrough.from,
+                        PatternStyle.lineThrough.replace,
+                      ),
+                    },
+                  ),
+                  MatchText(
+                    pattern: PatternStyle.code.pattern,
+                    style: codeTextStyle ?? bodyTextStyle.merge(PatternStyle.code.textStyle),
+                    renderText: ({required String str, required String pattern}) => {
+                      'display': str.replaceAll(
+                        PatternStyle.code.from,
+                        PatternStyle.code.replace,
+                      ),
+                    },
+                  ),
+                ],
+                regexOptions: const RegexOptions(multiLine: true, dotAll: true),
+                selectable: isTextMessageTextSelectable,
+                style: bodyTextStyle,
+                text: message.text,
+                textWidthBasis: TextWidthBasis.longestLine,
               ),
             ),
           ),

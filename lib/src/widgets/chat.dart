@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:flutter_chat_ui/src/models/chat_send_button_icon.dart';
 import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view.dart' show PhotoViewComputedScale;
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -404,16 +403,7 @@ class ChatState extends State<Chat> {
                                 ),
                               ),
                       ),
-                      widget.customBottomWidget ?? Container()
-                      // Input(
-                      //   isAttachmentUploading: widget.isAttachmentUploading,
-                      //   onAttachmentPressed: widget.onAttachmentPressed,
-                      //   onSendPressed: widget.onSendPressed,
-                      //   options: widget.inputOptions,
-                      //   showAnonymousSendBtn: false, // sajad we are using customBottomWidget so ignore this
-                      //   sendBtn: ChatSendButtonIcon.send, // sajad we are using customBottomWidget so ignore this
-                      //   onSendBtnPressed: (sendBtn) {},
-                      // ),
+                      widget.customBottomWidget ?? Container(),
                     ],
                   ),
                 ),
@@ -492,7 +482,9 @@ class ChatState extends State<Chat> {
     } else {
       final map = object as Map<String, Object>;
       final message = map['message']! as types.Message;
-      final messageWidth = widget.showUserAvatars && message.author.id != widget.user.id ? min(constraints.maxWidth * 0.72, 440).floor() : min(constraints.maxWidth * 0.78, 440).floor();
+      final messageWidth = widget.showUserAvatars && message.author.id != widget.user.id
+          ? min(constraints.maxWidth * 0.72, 600).floor()
+          : min(constraints.maxWidth * 0.78, 600).floor();
 
       return AutoScrollTag(
         controller: _scrollController,
