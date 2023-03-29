@@ -1,14 +1,10 @@
-import 'package:chat_bubbles/bubbles/bubble_normal.dart';
-import 'package:chat_bubbles/bubbles/bubble_special_one.dart';
-import 'package:chat_bubbles/bubbles/bubble_special_three.dart';
-import 'package:chat_bubbles/bubbles/bubble_special_two.dart';
+import 'package:chat_bubbles/chat_bubbles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_link_previewer/flutter_link_previewer.dart' show LinkPreview, regexEmail, regexLink;
 import 'package:flutter_parsed_text/flutter_parsed_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../flutter_chat_ui.dart';
 import '../../models/emoji_enlargement_behavior.dart';
 import '../../models/pattern_style.dart';
 import '../../util.dart';
@@ -25,6 +21,7 @@ class TextMessage extends StatelessWidget {
     required this.hideBackgroundOnEmojiMessages,
     required this.isTextMessageTextSelectable,
     required this.message,
+    required this.messageWidth,
     this.nameBuilder,
     this.onPreviewDataFetched,
     this.options = const TextMessageOptions(),
@@ -46,6 +43,9 @@ class TextMessage extends StatelessWidget {
 
   /// [types.TextMessage].
   final types.TextMessage message;
+
+  /// Maximum message width.
+  final int messageWidth;
 
   /// This is to allow custom user name builder
   /// By using this we can fetch newest user info based on id
@@ -77,7 +77,16 @@ class TextMessage extends StatelessWidget {
         isConsistsOfEmojis(emojiEnlargementBehavior, message);
     final theme = InheritedChatTheme.of(context).theme;
     final user = InheritedUser.of(context).user;
-    final width = MediaQuery.of(context).size.width;
+    final width = messageWidth.toDouble();
+
+    if (usePreviewData && onPreviewDataFetched != null) {
+      final urlRegexp = RegExp(regexLink, caseSensitive: false);
+      final matches = urlRegexp.allMatches(message.text);
+
+      if (matches.isNotEmpty) {
+        return _linkPreview(user, width, context);
+      }
+    }
 
     return Container(
       child: _textWidgetBuilder(user, context, enlargeEmojis),
@@ -89,25 +98,29 @@ class TextMessage extends StatelessWidget {
     double width,
     BuildContext context,
   ) {
-    final linkDescriptionTextStyle = user.id == message.author.id
+    final isSender = user.id == message.author.id;
+    final linkDescriptionTextStyle = isSender
         ? InheritedChatTheme.of(context).theme.sentMessageLinkDescriptionTextStyle
         : InheritedChatTheme.of(context).theme.receivedMessageLinkDescriptionTextStyle;
-    final linkTitleTextStyle = user.id == message.author.id
+    final linkTitleTextStyle = isSender
         ? InheritedChatTheme.of(context).theme.sentMessageLinkTitleTextStyle
         : InheritedChatTheme.of(context).theme.receivedMessageLinkTitleTextStyle;
+    final borderRadius = BorderRadius.circular(10.0);
+    final margin = isSender ? EdgeInsets.only(top: 5.0, right: 10.0) : EdgeInsets.only(left: 10.0, top: 5.0);
+    final padding = EdgeInsets.all(10.0);
 
     return LinkPreview(
+      borderRadius: borderRadius,
+      color: isSender ? Colors.black : const Color(0xffE8E8E8),
       enableAnimation: true,
+      margin: margin,
       metadataTextStyle: linkDescriptionTextStyle,
       metadataTitleStyle: linkTitleTextStyle,
       onLinkPressed: options.onLinkPressed,
       onPreviewDataFetched: _onPreviewDataFetched,
       openOnPreviewImageTap: options.openOnPreviewImageTap,
       openOnPreviewTitleTap: options.openOnPreviewTitleTap,
-      padding: EdgeInsets.symmetric(
-        horizontal: InheritedChatTheme.of(context).theme.messageInsetsHorizontal,
-        vertical: InheritedChatTheme.of(context).theme.messageInsetsVertical,
-      ),
+      padding: padding,
       previewData: message.previewData,
       text: message.text,
       textWidget: _textWidgetBuilder(user, context, false),
@@ -127,18 +140,15 @@ class TextMessage extends StatelessWidget {
     BuildContext context,
     bool enlargeEmojis,
   ) {
+    final isSender = user.id == message.author.id;
     final theme = InheritedChatTheme.of(context).theme;
-    final bodyLinkTextStyle = user.id == message.author.id
+    final bodyLinkTextStyle = isSender
         ? InheritedChatTheme.of(context).theme.sentMessageBodyLinkTextStyle
         : InheritedChatTheme.of(context).theme.receivedMessageBodyLinkTextStyle;
-    final bodyTextStyle =
-        user.id == message.author.id ? theme.sentMessageBodyTextStyle : theme.receivedMessageBodyTextStyle;
-    final boldTextStyle =
-        user.id == message.author.id ? theme.sentMessageBodyBoldTextStyle : theme.receivedMessageBodyBoldTextStyle;
-    final codeTextStyle =
-        user.id == message.author.id ? theme.sentMessageBodyCodeTextStyle : theme.receivedMessageBodyCodeTextStyle;
-    final emojiTextStyle =
-        user.id == message.author.id ? theme.sentEmojiMessageTextStyle : theme.receivedEmojiMessageTextStyle;
+    final bodyTextStyle = isSender ? theme.sentMessageBodyTextStyle : theme.receivedMessageBodyTextStyle;
+    final boldTextStyle = isSender ? theme.sentMessageBodyBoldTextStyle : theme.receivedMessageBodyBoldTextStyle;
+    final codeTextStyle = isSender ? theme.sentMessageBodyCodeTextStyle : theme.receivedMessageBodyCodeTextStyle;
+    final emojiTextStyle = isSender ? theme.sentEmojiMessageTextStyle : theme.receivedEmojiMessageTextStyle;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,8 +168,8 @@ class TextMessage extends StatelessWidget {
           Container(
             child: BubbleSpecialOne(
               tail: true,
-              isSender: user.id == message.author.id,
-              color: user.id == message.author.id ? Colors.black : const Color(0xffE8E8E8),
+              isSender: isSender,
+              color: isSender ? Colors.black : const Color(0xffE8E8E8),
               text: ParsedText(
                 parse: [
                   MatchText(

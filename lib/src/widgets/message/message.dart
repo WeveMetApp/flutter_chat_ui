@@ -364,6 +364,7 @@ class Message extends StatelessWidget {
                   hideBackgroundOnEmojiMessages: hideBackgroundOnEmojiMessages,
                   isTextMessageTextSelectable: isTextMessageTextSelectable,
                   message: textMessage,
+                  messageWidth: messageWidth,
                   nameBuilder: nameBuilder,
                   onPreviewDataFetched: onPreviewDataFetched,
                   options: textMessageOptions,
