@@ -84,12 +84,12 @@ class TextMessage extends StatelessWidget {
       final matches = urlRegexp.allMatches(message.text);
 
       if (matches.isNotEmpty) {
-        return _linkPreview(user, width, context);
+        return _linkPreview(user, width, context, width);
       }
     }
 
     return Container(
-      child: _textWidgetBuilder(user, context, enlargeEmojis),
+      child: _textWidgetBuilder(user, context, enlargeEmojis, width),
     );
   }
 
@@ -97,6 +97,7 @@ class TextMessage extends StatelessWidget {
     types.User user,
     double width,
     BuildContext context,
+    double messageWidth,
   ) {
     final isSender = user.id == message.author.id;
     final linkDescriptionTextStyle = isSender
@@ -113,6 +114,7 @@ class TextMessage extends StatelessWidget {
       borderRadius: borderRadius,
       color: isSender ? Colors.black : const Color(0xffE8E8E8),
       enableAnimation: true,
+      isSender: isSender,
       margin: margin,
       metadataTextStyle: linkDescriptionTextStyle,
       metadataTitleStyle: linkTitleTextStyle,
@@ -123,7 +125,7 @@ class TextMessage extends StatelessWidget {
       padding: padding,
       previewData: message.previewData,
       text: message.text,
-      textWidget: _textWidgetBuilder(user, context, false),
+      textWidget: _textWidgetBuilder(user, context, false, messageWidth),
       userAgent: userAgent,
       width: width,
     );
@@ -139,6 +141,7 @@ class TextMessage extends StatelessWidget {
     types.User user,
     BuildContext context,
     bool enlargeEmojis,
+    double messageWidth,
   ) {
     final isSender = user.id == message.author.id;
     final theme = InheritedChatTheme.of(context).theme;
@@ -165,11 +168,12 @@ class TextMessage extends StatelessWidget {
           else
             Text(message.text, style: emojiTextStyle)
         else
-          Container(
+          FittedBox(
             child: BubbleSpecialOne(
-              tail: true,
-              isSender: isSender,
               color: isSender ? Colors.black : const Color(0xffE8E8E8),
+              isSender: isSender,
+              width: messageWidth,
+              tail: true,
               text: ParsedText(
                 parse: [
                   MatchText(
