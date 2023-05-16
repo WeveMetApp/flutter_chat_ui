@@ -455,7 +455,12 @@ class ChatState extends State<Chat> {
   ) {
     if (object is DateHeader) {
       if (widget.dateHeaderBuilder != null) {
-        return widget.dateHeaderBuilder!(object);
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: widget.dateHeaderBuilder!(object),
+          ),
+        );
       } else {
         return Container(
           alignment: Alignment.center,

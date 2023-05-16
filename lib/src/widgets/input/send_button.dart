@@ -71,7 +71,7 @@ class SendButton extends StatelessWidget {
     }
 
     return IconButton(
-      padding: EdgeInsets.only(right: 10), // sajad change to all zero if you want to remove the padding
+      padding: EdgeInsets.only(right: 10),
       icon: icon,
       onPressed: onPressed,
       // padding: padding,

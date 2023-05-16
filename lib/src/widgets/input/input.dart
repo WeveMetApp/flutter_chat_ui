@@ -44,7 +44,6 @@ class Input extends StatefulWidget {
   /// be transformed to [types.TextMessage] and added to the messages list.
   final void Function(types.PartialText) onSendPressed;
 
-  /// sajad
   final Function(ChatSendButtonIcon) onAnonymousProfileBtnPressed;
 
   /// Customisation options for the [Input].
@@ -124,8 +123,6 @@ class _InputState extends State<Input> {
     // if (widget.showAnonymousSendBtn) {
     if (widget.sendBtn == ChatSendButtonIcon.anonymous) {
       widget.onAnonymousProfileBtnPressed(ChatSendButtonIcon.profile);
-
-      print('sajad showAnonymousSendBtn show pop up');
     } else if (widget.sendBtn == ChatSendButtonIcon.profile) {
       widget.onAnonymousProfileBtnPressed(ChatSendButtonIcon.anonymous);
     } else {
