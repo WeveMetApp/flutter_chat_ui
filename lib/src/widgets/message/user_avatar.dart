@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../models/bubble_rtl_alignment.dart';
-import '../../util.dart';
-import '../state/inherited_chat_theme.dart';
 
 /// Renders user's avatar or initials next to a message.
 class UserAvatar extends StatelessWidget {
@@ -29,36 +26,40 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = getUserAvatarNameColor(
-      author,
-      InheritedChatTheme.of(context).theme.userAvatarNameColors,
-    );
+    final bgColor = Colors.transparent;
     final hasImage = author.imageUrl != null && author.imageUrl!.isNotEmpty;
-    // final initials = getUserInitials(author);
+
+    if (isOtherUserAnonymous) {
+      return Container(
+        child: GestureDetector(
+          onTap: () => onAvatarTap?.call(author),
+          child: CircleAvatar(
+            backgroundColor: bgColor,
+            backgroundImage: AssetImage('assets/images/img_anonymous.png'),
+            radius: 25,
+          ),
+        ),
+      );
+    } else if (!hasImage) {
+      return Container(
+        child: GestureDetector(
+          onTap: () => onAvatarTap?.call(author),
+          child: CircleAvatar(
+            backgroundColor: bgColor,
+            backgroundImage: AssetImage('assets/images/img_profile.png'),
+            radius: 25,
+          ),
+        ),
+      );
+    }
 
     return Container(
-      // color: Colors.yellow,
-      // margin: bubbleRtlAlignment == BubbleRtlAlignment.left
-      //     ? const EdgeInsetsDirectional.only(end: 8)
-      //     : const EdgeInsets.only(right: 8),
       child: GestureDetector(
         onTap: () => onAvatarTap?.call(author),
         child: CircleAvatar(
-          backgroundColor:
-              hasImage ? InheritedChatTheme.of(context).theme.userAvatarImageBackgroundColor : Colors.transparent,
-          backgroundImage: hasImage && isOtherUserAnonymous == false
-              ? NetworkImage(
-                  author.imageUrl!,
-                )
-              : null,
+          backgroundColor: bgColor,
+          backgroundImage: NetworkImage(author.imageUrl!),
           radius: 25,
-          child: !hasImage || isOtherUserAnonymous == true
-              ? SvgPicture.asset(
-                  isOtherUserAnonymous == true ? 'assets/images/img_anonymous.svg' : 'assets/images/img_profile.svg',
-                  width: 50,
-                  height: 50,
-                )
-              : null,
         ),
       ),
     );

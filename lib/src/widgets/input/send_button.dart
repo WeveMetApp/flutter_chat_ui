@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/src/user.dart';
 import 'package:flutter_chat_ui/src/models/chat_send_button_icon.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_svg_provider/flutter_svg_provider.dart' as SvgProvider;
 
-import '../state/inherited_chat_theme.dart';
 import '../state/inherited_l10n.dart';
 
 /// A class that represents send button widget.
@@ -29,6 +27,7 @@ class SendButton extends StatelessWidget {
   final EdgeInsets padding;
   @override
   Widget build(BuildContext context) {
+    final bgColor = Colors.transparent;
     Widget? icon;
 
     switch (sendBtn) {
@@ -38,34 +37,38 @@ class SendButton extends StatelessWidget {
           backgroundColor: Colors.white,
           child: SvgPicture.asset(
             'assets/ic_sendbtn.svg',
-            color: InheritedChatTheme.of(context).theme.inputBackgroundColor,
+            color: bgColor,
             width: 25,
             height: 25,
             package: 'flutter_chat_ui',
           ),
         );
+
         break;
       case ChatSendButtonIcon.anonymous:
-        icon = Image(
-          width: 40,
-          height: 40,
-          image: SvgProvider.Svg('assets/images/img_anonymous.svg'),
+        icon = CircleAvatar(
+          radius: 20,
+          backgroundImage: AssetImage('assets/images/img_anonymous.png'),
+          backgroundColor: bgColor,
         );
+
         break;
       case ChatSendButtonIcon.profile:
         if (meUser.imageUrl?.isEmpty ?? true) {
-          icon = Image(
-            width: 40,
-            height: 40,
-            image: SvgProvider.Svg('assets/images/img_profile.svg'),
-          );
-        } else {
           icon = CircleAvatar(
             radius: 20,
-            backgroundImage: NetworkImage(meUser.imageUrl!),
-            backgroundColor: Colors.white,
+            backgroundImage: AssetImage('assets/images/img_profile.png'),
+            backgroundColor: bgColor,
           );
+
+          break;
         }
+
+        icon = CircleAvatar(
+          radius: 20,
+          backgroundImage: NetworkImage(meUser.imageUrl!),
+          backgroundColor: bgColor,
+        );
 
         break;
     }
@@ -74,8 +77,6 @@ class SendButton extends StatelessWidget {
       padding: EdgeInsets.only(right: 10),
       icon: icon,
       onPressed: onPressed,
-      // padding: padding,
-      // splashRadius: 24,
       tooltip: InheritedL10n.of(context).l10n.sendButtonAccessibilityLabel,
     );
   }
