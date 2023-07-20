@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/src/user.dart';
 import 'package:flutter_chat_ui/src/models/chat_send_button_icon.dart';
+import 'package:flutter_chat_ui/src/widgets/state/inherited_chat_theme.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../state/inherited_l10n.dart';
@@ -37,7 +38,7 @@ class SendButton extends StatelessWidget {
           backgroundColor: Colors.white,
           child: SvgPicture.asset(
             'assets/ic_sendbtn.svg',
-            color: bgColor,
+            color: InheritedChatTheme.of(context).theme.inputBackgroundColor,
             width: 25,
             height: 25,
             package: 'flutter_chat_ui',
