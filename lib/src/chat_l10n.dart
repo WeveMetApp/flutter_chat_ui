@@ -105,9 +105,9 @@ class ChatL10nKo extends ChatL10n {
   /// which extends [ChatL10n]
   const ChatL10nKo({
     super.attachmentButtonAccessibilityLabel = '미디어 보내기',
-    super.emptyChatPlaceholder = '주고받은 메시지가 없습니다',
+    super.emptyChatPlaceholder = '메시지 없음',
     super.fileButtonAccessibilityLabel = '파일',
-    super.inputPlaceholder = '메시지',
+    super.inputPlaceholder = '메시지 입력',
     super.sendButtonAccessibilityLabel = '보내기',
     super.unreadMessagesLabel = '읽지 않은 메시지',
   });
